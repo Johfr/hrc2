@@ -1,0 +1,305 @@
+<template>
+  <v-container class="data-search-table-container">
+    <v-data-table
+      :headers="headers"
+      :items="teams"
+      sort-by="calories"
+      class=""
+      :search="search"
+      :custom-filter="filterOnlyCapsText"
+    >
+      <template v-slot:top>
+        <v-toolbar
+          flat
+          class="mb-5 pt-4"
+        >
+          <!-- SEARCH  -->
+          <v-text-field
+            v-model="search"
+            label="Rechercher (En caractère majuscule uniquement)"
+            class="mt-4"
+          ></v-text-field>
+          
+          <v-spacer></v-spacer>
+          <!-- Modal pour Creer une team -->
+          <v-dialog
+            v-model="dialog"
+            max-width="500px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                dark
+                class=""
+                v-bind="attrs"
+                v-on="on"
+              >
+                Créer 
+                <v-icon
+                  small
+                  class="ml-2"
+                >
+                  mdi-plus
+                </v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">{{ formTitle }}</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col>
+                      <FormCreateTeam @newteam="save" @close="close" />
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+
+          <!-- Modal pour rejoindre une team -->
+          <v-dialog
+            v-model="dialogJoin"
+            max-width="500px"
+          >
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">Rejoindre {{ Object.values(editedItem).join("") }}</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col>
+                      <FormInputCodeVerify @close="close" :teamName='Object.values(editedItem).join("")' />
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions class="d-none">
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="close"
+                >
+                  Cancel
+                </v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="save"
+                >
+                  Valider
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+
+      </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-btn
+          elevation="2"
+          small
+          @click="joinTeam(item)"
+        >
+          Rejoindre
+        </v-btn>
+        <router-link to="/teamPage">
+          <v-icon
+            class="ml-2 arrow-icon"
+            v-if="item.teamOwner"
+          >
+            mdi-arrow-right-bold
+          </v-icon>
+        </router-link>
+        <!-- 
+        <v-icon
+          small
+          @click="deleteItem(item)"
+        >
+          mdi-delete
+        </v-icon> -->
+      </template>
+
+      <template v-slot:item.leaders="{ item }">
+        <!-- {{ header.text }} -- -->
+        {{ item.leaders }}
+        <v-icon small>mdi-account-multiple</v-icon>
+      </template>
+      <!-- ???  -->
+      <template v-slot:no-data>
+        <v-btn
+          color="primary"
+          @click="initialize"
+        >
+          Reset
+        </v-btn>
+      </template>
+    </v-data-table>
+  </v-container>
+</template>
+
+
+<script>
+import FormCreateTeam from '../forms/FormCreateTeam.vue'
+import FormInputCodeVerify from '../forms/FormInputCodeVerify.vue'
+  export default {
+  components: { FormCreateTeam, FormInputCodeVerify },
+    data: () => ({
+      dialog: false,
+      dialogJoin: false,
+      dialogDelete: false,
+      search: '',
+      headers: [
+        { text: 'Equipes', value: 'teamName', align: 'start' },
+        { text: 'Leaders', value: 'leaders' },
+        { text: 'Division', value: 'division' },
+        { text: 'Membres', value: 'membres' },
+        { text: 'Actions', value: 'actions', sortable: false },
+      ],
+      teams: [],
+      editedIndex: -1,
+      editedItem: {
+        teamName: '',
+        leaders: 0,
+        membres: 0,
+        division: '',
+        teamOwner: false,
+      },
+      defaultItem: {
+        teamName: '',
+        leaders: 0,
+        membres: 0,
+        division: '',
+        teamOwner: false,
+      },
+    }),
+
+    computed: {
+      formTitle () {
+        return this.editedIndex === -1 ? 'Team' : 'Rejoindre une team'
+      },
+    },
+
+    watch: {
+      dialog (val) {
+        val || this.close()
+      },
+      dialogJoin (val) {
+        val || this.close()
+      },
+      dialogDelete (val) {
+        val || this.closeDelete()
+      },
+    },
+
+    created () {
+      this.initialize()
+    },
+
+    methods: {
+      initialize () {
+        this.teams = [
+          {
+            teamName: 'HillclimbersFr',
+            leaders: 1,
+            membres: 47,
+            division: 'CC',
+            teamOwner: true
+          },
+          {
+            teamName: 'Ice cream sandwich',
+            leaders: 1,
+            membres: 50,
+            division: 'Division VI',
+            teamOwner: false
+          },
+          {
+            teamName: 'Eclair',
+            leaders: 1,
+            membres: 32,
+            division: 'Division III',
+            teamOwner: false
+          }
+        ]
+      },
+
+      // addTeam (payload) {
+      //   this.teams.push(...payload)
+      // },
+      
+      filterOnlyCapsText (value, search) {
+        return value != null &&
+          search != null &&
+          typeof value === 'string' &&
+          value.toString().toLocaleUpperCase().indexOf(search) !== -1
+      },
+
+      joinTeam (item) {
+        this.dialogJoin = true
+        this.editedIndex = this.teams.indexOf(item.teamName)
+        this.editedItem = Object.assign({}, item.teamName)
+        
+        // console.log(this.editedIndex)
+        // console.log(this.editedItem)
+      },
+
+      close () {
+        this.dialog = false
+        this.dialogJoin = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
+      },
+
+      save (payload) {
+        this.teams.push(...payload)
+        this.close()
+      },
+
+      // editItem (item) {
+      //   this.editedIndex = this.teams.indexOf(item)
+      //   this.editedItem = Object.assign({}, item)
+      //   this.dialog = true
+      // },
+
+      // deleteItem (item) {
+      //   this.editedIndex = this.teams.indexOf(item)
+      //   this.editedItem = Object.assign({}, item)
+      //   this.dialogDelete = true
+      // },
+
+      // deleteItemConfirm () {
+      //   this.teams.splice(this.editedIndex, 1)
+      //   this.closeDelete()
+      // },
+
+      // closeDelete () {
+      //   this.dialogDelete = false
+      //   this.$nextTick(() => {
+      //     this.editedItem = Object.assign({}, this.defaultItem)
+      //     this.editedIndex = -1
+      //   })
+      // },
+    },
+  }
+</script>
+
+<style lang="scss" scoped>
+.arrow-icon {
+  cursor: pointer;
+  transition: .4s ease;
+  
+  &:hover {
+    transform: translateX(5px);
+  }
+}
+</style>

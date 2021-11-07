@@ -5,38 +5,32 @@
       color="primary"
       dark
     >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+      <router-link to="/" class="d-flex align-center">
+          <v-img
+            alt="Vuetify Logo"
+            class="shrink mr-2"
+            contain
+            src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+            transition="scale-transition"
+            width="40"
+          />
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+          <!-- <v-img
+            alt="Vuetify Name"
+            class="shrink mt-1 hidden-sm-and-down"
+            contain
+            min-width="100"
+            src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
+            width="100"
+          /> -->
+          
+         <span> Hill Climb Racing 2 - Team's statistic</span>
+        </router-link>
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      <NavbarUserAccount />
     </v-app-bar>
-
     <v-main>
       <router-view/>
     </v-main>
@@ -44,8 +38,10 @@
 </template>
 
 <script>
+import NavbarUserAccount from './components/NavbarUserAccount.vue';
 
 export default {
+  components: {NavbarUserAccount },
   name: 'App',
 
   data: () => ({
@@ -53,3 +49,13 @@ export default {
   }),
 };
 </script>
+
+<style lang="scss" scoped>
+.v-main {
+  padding-top: 130px !important;
+}
+  .v-application a {
+    color: #fff;
+    text-decoration: none;
+  }
+</style>

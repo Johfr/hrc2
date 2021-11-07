@@ -1,0 +1,34 @@
+
+{
+    "nickname": "joh",
+    "id": "1255fds2",
+    "scores": [
+        {
+        "eventName": "Jus de citrouille",
+        "actif": true,
+        "score1": "25000",
+        "score2": "26000",
+        "score3": "26500",
+        "moyenne": "24500",
+        "km1": "100",
+        "km2": "150",
+        "km3": "200",
+        "pts1": "100",
+        "pts2": "200",
+        "pts3": "300",
+        },
+        {
+        "eventName": "Jus de citrouille2",
+        "score1": "15000",
+        "score2": "16000",
+        "score3": "16500",
+        "moyenne": "14500",
+        "km1": "100",
+        "km2": "150",
+        "km3": "200",
+        "pts1": "100",
+        "pts2": "200",
+        "pts3": "300",
+        }
+    ]
+}
