@@ -12,15 +12,25 @@
       <v-toolbar
         flat
       >
-        <v-toolbar-title>Membres de l'équipe</v-toolbar-title>
+        <v-toolbar-title>Event en cours</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
           vertical
         ></v-divider>
+
+        <v-toolbar-title>
+          <span class="title_event-name">
+            {{ actualEventSelected ? actualEventSelected.name : $store.getters.getActualEvent.eventName }}
+            <!-- {{ actualEvent.name }} : -->
+          </span>
+          <span class="title_event-date">
+            {{ actualEventSelected ? actualEventSelected.date : $store.getters.getActualEvent.start + " - " + $store.getters.getActualEvent.end }} 
+          </span>
+        </v-toolbar-title>
         <v-spacer></v-spacer>
         
-        <!-- Create  -->
+        <!-- modal Create  -->
         <v-dialog
           v-model="dialog"
           max-width="500px"
@@ -126,7 +136,7 @@
           </v-card>
         </v-dialog>
 
-        <!-- Delete  -->
+        <!-- modal Delete  -->
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
@@ -235,13 +245,13 @@
     <template v-slot:item.moyenne="{ item }">
       <div class="column-item-container">
         <span class="score">
-          {{ item.moyenne.score }}
+          {{ !isNaN(item.moyenne.score) ? item.moyenne.score : 0 }}
         </span>
         <span class="km">
-          {{ item.moyenne.km }} Km
+          {{ !isNaN(item.moyenne.km) ? item.moyenne.km : 0 }} Km
         </span>
         <span class="pts">
-          {{ item.moyenne.pts }} pts
+          {{ !isNaN(item.moyenne.pts) ? item.moyenne.pts : 0 }} pts
         </span>
       </div>
     </template>
@@ -276,6 +286,16 @@
 
 <script>
   export default {
+    props: {
+      // actualEvent: {
+      //   type: Object,
+      //   default: () => {}
+      // },
+      // actualEventIndex: {
+      //   type: Number,
+      //   default: () => {}
+      // },
+    },
     data: () => ({
       dialog: false,
       dialogDelete: false,
@@ -289,7 +309,9 @@
         { text: 'Moyenne', align: 'center', value: 'moyenne', sortable: false  },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
-      players: [],
+      allPlayers: null, // datas API provenant du store
+      players: [], // Liste des joueurs à afficher dans le tableau
+      scores: [],
       moyenne: '',
       bestRecord: '',
       bestKm: "",
@@ -307,22 +329,22 @@
           member: false,
         },
         eventName: "",
-        score1: "",
-        score2: "",
-        score3: "",
-        score4: "",
+        score1: 0,
+        score2: 0,
+        score3: 0,
+        score4: 0,
         moyenne: "",
         bestRecord: "",
         bestKm: "",
         bestPts: "",
-        km1: "",
-        km2: "",
-        km3: "",
-        km4: "",
-        pts1: "",
-        pts2: "",
-        pts3: "",
-        pts4: "",
+        km1: 0,
+        km2: 0,
+        km3: 0,
+        km4: 0,
+        pts1: 0,
+        pts2: 0,
+        pts3: 0,
+        pts4: 0,
       },
       defaultItem: {
         nickname: '',
@@ -334,22 +356,22 @@
           member: false,
         },
         eventName: "",
-        score1: "",
-        score2: "",
-        score3: "",
-        score4: "",
+        score1: 0,
+        score2: 0,
+        score3: 0,
+        score4: 0,
         moyenne: "",
         bestRecord: "",
         bestKm: "",
         bestPts: "",
-        km1: "",
-        km2: "",
-        km3: "",
-        km4: "",
-        pts1: "",
-        pts2: "",
-        pts3: "",
-        pts4: "",
+        km1: 0,
+        km2: 0,
+        km3: 0,
+        km4: 0,
+        pts1: 0,
+        pts2: 0,
+        pts3: 0,
+        pts4: 0,
       },
     }),
 
@@ -357,22 +379,72 @@
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
       },
+      actualEventSelected () {
+        return this.$store.state.eventSelected
+      },
+      playersDatas () {
+        return this.actualEvent.date
+      },
     },
-
     watch: {
       dialog (val) {
         val || this.close()
       },
       dialogDelete (val) {
         val || this.closeDelete()
+      },
+      actualEventSelected () {
+        this.players = []
+        
+        this.allEvents.map((event) => {
+          if (event.eventName === this.actualEventSelected.name) {
+            this.allPlayers.map((player) => {
+              player.stats.map((stat, i) => {
+                if (event.eventName === stat.eventName) {
+                  const actualEventIndex = i
+                  this.players.push({
+                    nickname: player.nickname,
+                    id: player.id,
+                    grade: player.grade,
+                    // actif: player,
+                    eventName: stat.eventName,
+                    score1: player.stats[actualEventIndex].eventParts[0].score,
+                    score2: player.stats[actualEventIndex].eventParts[1].score,
+                    score3: player.stats[actualEventIndex].eventParts[2].score,
+                    score4: player.stats[actualEventIndex].eventParts[3].score,
+                    moyenne: 0,
+                    bestRecord: 0,
+                    bestKm: 0,
+                    bestPts: 0,
+                    km1: player.stats[actualEventIndex].eventParts[0].km,
+                    km2: player.stats[actualEventIndex].eventParts[1].km,
+                    km3: player.stats[actualEventIndex].eventParts[2].km,
+                    km4: player.stats[actualEventIndex].eventParts[3].km,
+                    pts1: player.stats[actualEventIndex].eventParts[0].pts,
+                    pts2: player.stats[actualEventIndex].eventParts[1].pts,
+                    pts3: player.stats[actualEventIndex].eventParts[2].pts,
+                    pts4: player.stats[actualEventIndex].eventParts[3].pts,
+                  })
+                }
+              })
+            })
+          }
+        })
+      
+        this.calculBestScore('score1', 'score2', 'score3', 'score4', 'bestRecord')
+        this.calculBestScore('km1', 'km2', 'km3', 'km4', 'bestKm')
+        this.calculBestScore('pts1', 'pts2', 'pts3', 'pts4', 'bestPts')
+        this.calculMoyenne()
       }
     },
 
     created () {
-      // Requete
-      // récupérer la liste de tous les players
-      // Si le joueur est actif durant l'event alors on l'affiche sinon non -> cas d'un player qui a quitté l'équipe
-      this.initialize()
+    //   // Requete
+    //   // récupérer la liste de tous les players
+    //   // Si le joueur est actif durant l'event alors on l'affiche sinon non -> cas d'un player qui a quitté l'équipe
+      this.allPlayers = this.$store.getters.getPlayers
+      
+      this.initialize() // initie l'index de l'event
       this.calculMoyenne()
       this.calculBestScore('score1', 'score2', 'score3', 'score4', 'bestRecord')
       this.calculBestScore('km1', 'km2', 'km3', 'km4', 'bestKm')
@@ -380,93 +452,80 @@
     },
 
     mounted () {
+      // console.log("mont", this.actualEvent)
     },
 
     methods: {
       initialize () {
-        this.players = [
-          {
-            nickname: "Joh",
-            id: "1255fds2",
-            grade: {
-              leader: true,
-              coleader: false,
-              member: false,
-            },
-            actif: false,
-            eventName: "Jus de citrouille",
-            score1: 10000,
-            score2: 20000,
-            score3: 3000,
-            score4: 3009,
-            moyenne: 0,
-            bestRecord: 0,
-            bestKm: 0,
-            bestPts: 0,
-            km1: 100,
-            km2: 450,
-            km3: 200,
-            km4: 0,
-            pts1: 100,
-            pts2: 200,
-            pts3: 300,
-            pts4: 60,
-          },
-          {
-            nickname: "Jess",
-            id: "1255fds3",
-            grade: {
-              leader: false,
-              coleader: true,
-              member: false,
-            },
-            actif: true,
-            eventName: "Jus de citrouille",
-            score1: 10386,
-            score2: 15251,
-            score3: 16021,
-            score4: 16029,
-            moyenne: 0,
-            bestRecord: 0,
-            bestKm: 0,
-            bestPts: 0,
-            km1: 358,
-            km2: 100,
-            km3: 100,
-            km4: 0,
-            pts1: 300,
-            pts2: 300,
-            pts3: 300,
-            pts4: 60,
-          },
-          {
-            nickname: "Jack",
-            id: "1255fds4",
-            grade: {
-              leader: false,
-              coleader: false,
-              member: true,
-            },
-            actif: true,
-            eventName: "Jus de citrouille",
-            score1: 27002,
-            score2: 28000,
-            score3: 25000,
-            score4: 30009,
-            moyenne: 0,
-            bestRecord: 0,
-            bestKm: 0,
-            bestPts: 0,
-            km1: 2500,
-            km2: 100,
-            km3: 100,
-            km4: 0,
-            pts1: 300,
-            pts2: 300,
-            pts3: 300,
-            pts4: 60,
+        this.allEvents = this.$store.getters.getEvents
+        this.calculPlayersDatasByEvent()
+      },
+      calculPlayersDatasByEvent () {
+        this.allEvents.map((event) => {
+          if (event.actualEvent) {            
+            this.allPlayers.map((player) => {
+              player.stats.map((stat, i) => {
+                if (event.eventName === stat.eventName) {
+                  const actualEventIndex = i
+                  this.players.push({
+                    nickname: player.nickname,
+                    id: player.id,
+                    grade: player.grade,
+                    eventName: stat.eventName,
+                    score1: player.stats[actualEventIndex].eventParts[0].score,
+                    score2: player.stats[actualEventIndex].eventParts[1].score,
+                    score3: player.stats[actualEventIndex].eventParts[2].score,
+                    score4: player.stats[actualEventIndex].eventParts[3].score,
+                    moyenne: 0,
+                    bestRecord: 0,
+                    bestKm: 0,
+                    bestPts: 0,
+                    km1: player.stats[actualEventIndex].eventParts[0].km,
+                    km2: player.stats[actualEventIndex].eventParts[1].km,
+                    km3: player.stats[actualEventIndex].eventParts[2].km,
+                    km4: player.stats[actualEventIndex].eventParts[3].km,
+                    pts1: player.stats[actualEventIndex].eventParts[0].pts,
+                    pts2: player.stats[actualEventIndex].eventParts[1].pts,
+                    pts3: player.stats[actualEventIndex].eventParts[2].pts,
+                    pts4: player.stats[actualEventIndex].eventParts[3].pts,
+                  })
+                }
+              })
+            })
           }
-        ]
+        })
+      },
+      calculMoyenne () {
+        let score = ''
+        let km = ''
+        let pts = ''
+
+        let divisor = 3
+        this.players.map(player => {
+          if (player.score4 > 0) {
+            divisor = 4
+          }
+        })
+        this.players.map(data => {
+          score = (Math.round(parseInt(data.score1) + parseInt(data.score2) + parseInt(data.score3) + parseInt(data.score4)) / divisor).toFixed(0)
+          km = (Math.round(parseInt(data.km1) + parseInt(data.km2) + parseInt(data.km3) + parseInt(data.km4)) / divisor).toFixed(0)
+          pts = (Math.round(parseInt(data.pts1) + parseInt(data.pts2) + parseInt(data.pts3) + parseInt(data.pts4)) / divisor).toFixed(0)
+
+          data.moyenne = {score, km, pts}
+        })
+      },
+      calculBestScore (key1 = 0, key2 = 0, key3 = 0, key4 = 0, item) { // affiche le meilleur score parmis les 4
+        this.players.map(data => {
+          let scores = []
+          
+          scores.push(data[key1], data[key2], data[key3], data[key4])
+
+          scores.sort(function(a, b) {
+            return a - b;
+          })
+          
+          data[item] = scores[scores.length - 1]
+        })
       },
 
       editItem (item) {
@@ -515,36 +574,6 @@
         this.calculBestScore('pts1', 'pts2', 'pts3', 'pts4', 'bestPts')
         this.close()
       },
-
-      calculMoyenne () {
-        let score = ''
-        let km = ''
-        let pts = ''
-        
-        this.players.map(data => {
-          score = (Math.round(parseInt(data.score1) + parseInt(data.score2) + parseInt(data.score3) + parseInt(data.score4)) / 4).toFixed(0)
-          km = (Math.round(parseInt(data.km1) + parseInt(data.km2) + parseInt(data.km3) + parseInt(data.km4)) / 4).toFixed(0)
-          pts = (Math.round(parseInt(data.pts1) + parseInt(data.pts2) + parseInt(data.pts3) + parseInt(data.pts4)) / 4).toFixed(0)
-
-          data.moyenne = {score, km, pts}
-        })
-      },
-
-      calculBestScore (key1 = 0, key2 = 0, key3 = 0, key4 = 0, item) { // affiche le meilleur score parmis les 4
-        this.players.map(data => {
-          let scores = []
-          
-          scores.push(data[key1], data[key2], data[key3], data[key4])
-
-          scores.sort(function(a, b) {
-            return a - b;
-          })
-          // console.log(scores)
-          console.log(scores[scores.length - 1])
-          
-          data[item] = scores[scores.length - 1]
-        })
-      }
     },
   }
 </script>
@@ -571,8 +600,16 @@
       color: #fff;
     }
   }
+  .nickname-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
 
   ::v-deep {
+    .title_event-name {
+      font-weight: 700;
+      text-transform: uppercase;
+    }
     .best-record-header {
       display: flex;
       overflow: hidden;
@@ -595,9 +632,5 @@
         }
       }
     }
-  }
-  .nickname-title {
-    font-size: 15px;
-    font-weight: 700;
   }
 </style>
