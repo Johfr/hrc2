@@ -1,13 +1,17 @@
 <template>
   <v-container fluid class="best-runners_container">
     <h3 class="mb-10 encart-h3">{{ recordTitle }}</h3>
+    <!-- {{ newEventCreated }} -->
     <ul class="list">
-      <li class="item" v-for="bestRecord in bestRecords" :key="bestRecord.id">
-        <span class="item_title item_text" :title="bestRecord.playerName">
-          {{ bestRecord.playerName }}
+      <li class="item" v-for="participation in bestParticipation" :key="participation.id">
+        <span class="item_title item_text" :title="participation.playerName">
+          {{ participation.playerName }}
         </span>
         <span class="item_value item_text">
-          {{ bestRecord.bestRecord }} {{ recordName }}
+          {{ participation.nbreParticipation }}
+          <span class="item_fff item_text">
+            {{ participation.nbreParticipation > 1 ? "participations" : "participation"}}
+          </span>
         </span>
       </li>
     </ul>
@@ -22,13 +26,10 @@
         allPlayers: null,
         actualEvent: {},
         bestRecords: null,
+        bestParticipation: []
       }
     },
     props: {
-      recordKey: {
-        type: String,
-        default: () => {}
-      },
       recordName: {
         type: String,
         default: () => {}
@@ -37,10 +38,10 @@
         type: String,
         default: () => {}
       },
-      newEventCreated: {
-        type: Boolean,
-        default: false
-      },
+      // newEventCreated: {
+      //   type: Boolean,
+      //   default: false
+      // },
     },
     created () {
       this.allPlayers = this.$store.getters.getPlayers
@@ -64,14 +65,12 @@
         return this.$store.state.playersUpdated
       }
     },
-
     watch: {
       actualEventSelected () {
         this.calculBestPlayerByPts(this.actualEventSelected.name)
       },
       playersUpdated () {
         this.allPlayers = this.$store.getters.getPlayers
-        // console.log(this.allPlayers)
         
         if (this.actualEventSelected !== null) { // via le selecteur d'event
           this.calculBestPlayerByPts(this.actualEventSelected.name)
@@ -79,35 +78,49 @@
           this.calculBestPlayerByPts(this.actualEvent.name)
         }
       },
+      // newEventCreated () {
+        // on reload tout
+      // },
     },
     mounted () {
     },
     methods: {
       calculBestPlayerByPts (actualEventName) { // Classe les joueurs par rapport à leur meilleur points
-        let bestPlayers = []
+        let nbreParticipation = []
         this.allPlayers.map((player) => {
           player.stats.map((stat) => {
             if (actualEventName === stat.eventName) {
               let playerScore = []
-              let bestPlayer = 0
 
               for (let i =0; i < stat.eventParts.length; i++) {
-                playerScore.push(stat.eventParts[i][this.recordKey]) // -> tout se passe ici
+                playerScore.push(stat.eventParts[i][this.recordName]) // -> tout se passe ici
               }
-              playerScore.sort(function(a, b) {
-                return a - b;
-              })
-              bestPlayer = playerScore[playerScore.length - 1]
-              bestPlayers.push({playerName: player.nickname ,bestRecord : bestPlayer})
+              // calcul du nombre de participation
+              // si score1 < score2 < score3 < score4 alors 4 partcipations
+              let participation = 0
+
+              if (playerScore[0] > 0) {
+                participation += 1
+              }
+              if (playerScore[0] < playerScore[1]) {
+                participation += 1
+              }
+              if (playerScore[1] < playerScore[2]) {
+                participation += 1
+              }
+              if (playerScore[2] < playerScore[3]) {
+                participation += 1
+              }
+              nbreParticipation.push({playerName: player.nickname, nbreParticipation : participation})
+
             }
           })
         })
         // ordonne directement en décroissant
-        bestPlayers.sort(function(a, b) {
-          return b.bestRecord - a.bestRecord;
+        nbreParticipation.sort(function(a, b) {
+          return b.nbreParticipation - a.nbreParticipation;
         })
-
-        this.bestRecords = bestPlayers
+        this.bestParticipation = nbreParticipation
       },
     },
   }
@@ -144,6 +157,10 @@
 
     .item_value {
       font-weight: 700;
+    }
+
+    .item_fff {
+      font-weight: 400;
     }
   }
 }</style>

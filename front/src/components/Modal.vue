@@ -1,194 +1,112 @@
 <template>
-  <v-container class="modal-container">
-    <h1>Modal</h1>
-    <v-row justify="center">
-      <v-dialog
-        v-model="dialog"
-        persistent
-        max-width="600px"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            color="primary"
-            dark
-            v-bind="attrs"
-            v-on="on"
-          >
-            Créer
+  <v-dialog
+      v-model="dialog"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          color="primary"
+          dark
+          v-bind="attrs"
+          v-on="on"
+        >
+          Gestion de l'équipe
+        </v-btn>
+      </template>
+      <v-card>
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="close">
+            <v-icon>mdi-close</v-icon>
           </v-btn>
-        </template>
-        <v-card>
-          <v-card-title>
-            <span class="text-h5">User Profile</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col
-                  cols="12"
-                  sm="6"
-                  md="4"
-                >
-                  <v-text-field
-                    label="Legal first name*"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="6"
-                  md="4"
-                >
-                  <v-text-field
-                    label="Legal middle name"
-                    hint="example of helper text only on focus"
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="6"
-                  md="4"
-                >
-                  <v-text-field
-                    label="Legal last name*"
-                    hint="example of persistent helper text"
-                    persistent-hint
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    label="Email*"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    label="Password*"
-                    type="password"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="6"
-                >
-                  <v-select
-                    :items="['0-17', '18-29', '30-54', '54+']"
-                    label="Age*"
-                    required
-                  ></v-select>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="6"
-                >
-                  <v-autocomplete
-                    :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                    label="Interests"
-                    multiple
-                  ></v-autocomplete>
-                </v-col>
-              </v-row>
-            </v-container>
-            <small>*indicates required field</small>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
+          <v-toolbar-title>Gestion de l'équipe</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
             <v-btn
-              color="blue darken-1"
+              dark
               text
-              @click="dialog = false"
-            >
-              Close
-            </v-btn>
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="dialog = false"
+              @click="close"
             >
               Save
             </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-row>
-  </v-container>
+          </v-toolbar-items>
+        </v-toolbar>
+
+        <v-list
+          three-line
+          subheader
+        >
+          <v-subheader>Joueurs Actifs</v-subheader>
+          <v-list-item>
+            <ul class="players_list actif">
+              <li class="players_item actif" v-for="actifPlayer in actifPlayers" :key="actifPlayer.id">
+                <v-checkbox v-model="actifPlayer.kicked" @click="showPlayerDatas(actifPlayer)"></v-checkbox>
+                {{ actifPlayer.nickname }}
+                {{ actifPlayer.kicked ? "kické" : "Actif" }}
+              </li>
+            </ul>
+          </v-list-item>
+          <v-subheader>Joueurs Inactifs</v-subheader>
+          <v-list-item>
+            <ul class="players_list inactif">
+              <li class="players_item inactif" v-for="inactifPlayer in inactifPlayers" :key="inactifPlayer.id">
+                <v-checkbox :class="inactifPlayer" v-model="inactifPlayer.kicked" @click="showPlayerDatas(inactifPlayer)"></v-checkbox>
+                {{ inactifPlayer.nickname }}
+                {{ inactifPlayer.kicked ? "kické" : "Actif" }}
+              </li>
+            </ul>
+          </v-list-item>
+        </v-list>
+      </v-card>
+  </v-dialog>
 </template>
 
 <script>
   export default {
-    name: 'HelloWorld',
-    props: {
-      dialogProps: {
-        type: Boolean,
-        default: false
+    data () {
+      return {
+        dialog: false,
+        notifications: false,
+        sound: true,
+        widgets: false,
+        actifPlayers: null,
+        inactifPlayers: null,
+        defaultActifPlayersDatas: null,
+        defaultinactifPlayersDatas: null,
       }
     },
-    mounted () {
+    created () {
+      this.actifPlayers = this.$store.getters.getActifPlayers
+      this.inactifPlayers = this.$store.getters.getInactifPlayers
     },
-    computed: {
-    },
-    watch: {
-      dialogProps () {
-        this.dialog = this.dialogProps
+    methods: {
+      showPlayerDatas () {
+        console.log('item1', this.$store.getters.getPlayers[0])
+        // setTimeout(() => {
+          
+        //   this.$store.dispatch('kickPlayer', {
+        //     nickname: item.nickname,
+        //     id: item.id,
+        //     kicked: item.kicked,
+        //   })
+          
+        // }, 1000)
+        console.log('item2', this.$store.getters.getPlayers[0])
+      },
+      close () {
+        this.actifPlayers = []
+        this.actifPlayers = this.$store.getters.getActifPlayers
+        this.dialog = false
       }
-    },
-    data: () => ({
-      dialog: false,
-      ecosystem: [
-        {
-          text: 'vuetify-loader',
-          href: 'https://github.com/vuetifyjs/vuetify-loader',
-        },
-        {
-          text: 'github',
-          href: 'https://github.com/vuetifyjs/vuetify',
-        },
-        {
-          text: 'awesome-vuetify',
-          href: 'https://github.com/vuetifyjs/awesome-vuetify',
-        },
-      ],
-      importantLinks: [
-        {
-          text: 'Documentation',
-          href: 'https://vuetifyjs.com',
-        },
-        {
-          text: 'Chat',
-          href: 'https://community.vuetifyjs.com',
-        },
-        {
-          text: 'Made with Vuetify',
-          href: 'https://madewithvuejs.com/vuetify',
-        },
-        {
-          text: 'Twitter',
-          href: 'https://twitter.com/vuetifyjs',
-        },
-        {
-          text: 'Articles',
-          href: 'https://medium.com/vuetify',
-        },
-      ],
-      whatsNext: [
-        {
-          text: 'Explore components',
-          href: 'https://vuetifyjs.com/components/api-explorer',
-        },
-        {
-          text: 'Select a layout',
-          href: 'https://vuetifyjs.com/getting-started/pre-made-layouts',
-        },
-        {
-          text: 'Frequently Asked Questions',
-          href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-        },
-      ],
-    }),
+    }
   }
 </script>
 
 <style lang="scss" scoped>
+.players_item {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+}
 </style>

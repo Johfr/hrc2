@@ -4,6 +4,7 @@
   <v-data-table
     :headers="headers"
     :items="players"
+    :item-class= "row_classes"
     sort-by="calories"
     class="elevation-1"
   >
@@ -21,8 +22,7 @@
 
         <v-toolbar-title>
           <span class="title_event-name">
-            {{ actualEventSelected ? actualEventSelected.name : $store.getters.getActualEvent.eventName }}
-            <!-- {{ actualEvent.name }} : -->
+            <h2 class="title-h2">{{ actualEventSelected ? actualEventSelected.name : $store.getters.getActualEvent.eventName }}</h2>
           </span>
           <span class="title_event-date">
             {{ actualEventSelected ? actualEventSelected.date : $store.getters.getActualEvent.start + " - " + $store.getters.getActualEvent.end }} 
@@ -42,6 +42,7 @@
               class="mb-2"
               v-bind="attrs"
               v-on="on"
+              @click="generateId"
             >
               Joueur
               <v-icon small>
@@ -51,7 +52,7 @@
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{ formTitle }}</span>
+              <span class="text-h5">{{ formTitle.name }}</span>
             </v-card-title>
             
             <!-- Champs input de la modal  -->
@@ -62,7 +63,7 @@
                     <v-text-field v-model="editedItem.nickname" label="Pseudo" />
                   </v-col>
                   <v-col cols="6">
-                    <v-text-field v-model="editedItem.id" label="Id" />
+                    <v-text-field v-model="editedItem.id" label="Id" disabled />
                   </v-col>
                   <v-col cols="12">
                     <v-select 
@@ -73,7 +74,7 @@
                     />
                   </v-col>
                   <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.score1" label="score1" />
+                    <v-text-field type="number" v-model="editedItem.score1" label="score1" :value="'12336'" />
                   </v-col>
                   <v-col cols="3">
                     <v-text-field type="number" v-model="editedItem.score2" label="score2" />
@@ -139,12 +140,26 @@
         <!-- modal Delete  -->
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+            <v-card-title class="text-h5">Expulser ce joueur ?</v-card-title>
+            <v-card-text>
+              Ce joueur sera indiqué comme kické et apparaitra uniquement sur les events auxquels il a joué.
+            </v-card-text>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="6">
+                    <v-text-field v-model="editedItem.nickname" label="Pseudo" disabled/>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-text-field v-model="editedItem.id" label="Id" disabled/>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="deleteItemConfirm({name: editedItem.nickname, id: editedItem.id})">OK</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -265,6 +280,7 @@
         mdi-pencil
       </v-icon>
       <v-icon
+        v-if="!item.kicked"
         small
         @click="deleteItem(item)"
       >
@@ -287,20 +303,16 @@
 <script>
   export default {
     props: {
-      // actualEvent: {
-      //   type: Object,
-      //   default: () => {}
-      // },
-      // actualEventIndex: {
-      //   type: Number,
-      //   default: () => {}
-      // },
+      actualEvent: {
+        type: Object,
+        default: () => {}
+      },
     },
     data: () => ({
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: 'Joueurs', align: 'center', value: 'nickname',},
+        { text: 'Joueurs', align: 'center', value: 'nickname'},
         { text: 'Score1', align: 'center', value: 'score1' },
         { text: 'Score2', align: 'center', value: 'score2' },
         { text: 'Score3', align: 'center', value: 'score3' },
@@ -322,7 +334,7 @@
       editedItem: {
         nickname: '',
         id: "",
-        actif: true,
+        kicked: false,
         grade: {
           leader: false,
           coleader: false,
@@ -349,7 +361,7 @@
       defaultItem: {
         nickname: '',
         id: "",
-        actif: true,
+        kicked: false,
         grade: {
           leader: false,
           coleader: false,
@@ -374,17 +386,16 @@
         pts4: 0,
       },
     }),
-
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+        return this.actualEventSelected || this.actualEvent
       },
       actualEventSelected () {
         return this.$store.state.eventSelected
       },
       playersDatas () {
         return this.actualEvent.date
-      },
+      }
     },
     watch: {
       dialog (val) {
@@ -406,7 +417,7 @@
                     nickname: player.nickname,
                     id: player.id,
                     grade: player.grade,
-                    // actif: player,
+                    kicked: player.kicked,
                     eventName: stat.eventName,
                     score1: player.stats[actualEventIndex].eventParts[0].score,
                     score2: player.stats[actualEventIndex].eventParts[1].score,
@@ -437,24 +448,13 @@
         this.calculMoyenne()
       }
     },
-
     created () {
-    //   // Requete
-    //   // récupérer la liste de tous les players
-    //   // Si le joueur est actif durant l'event alors on l'affiche sinon non -> cas d'un player qui a quitté l'équipe
       this.allPlayers = this.$store.getters.getPlayers
-      
       this.initialize() // initie l'index de l'event
-      this.calculMoyenne()
-      this.calculBestScore('score1', 'score2', 'score3', 'score4', 'bestRecord')
-      this.calculBestScore('km1', 'km2', 'km3', 'km4', 'bestKm')
-      this.calculBestScore('pts1', 'pts2', 'pts3', 'pts4', 'bestPts')
     },
-
-    mounted () {
-      // console.log("mont", this.actualEvent)
-    },
-
+    // mounted () {
+    //   console.log("mont", this.$store.getters.getActifPlayers)
+    // },
     methods: {
       initialize () {
         this.allEvents = this.$store.getters.getEvents
@@ -471,6 +471,7 @@
                     nickname: player.nickname,
                     id: player.id,
                     grade: player.grade,
+                    kicked: player.kicked,
                     eventName: stat.eventName,
                     score1: player.stats[actualEventIndex].eventParts[0].score,
                     score2: player.stats[actualEventIndex].eventParts[1].score,
@@ -494,6 +495,11 @@
             })
           }
         })
+        
+        this.calculMoyenne()
+        this.calculBestScore('score1', 'score2', 'score3', 'score4', 'bestRecord')
+        this.calculBestScore('km1', 'km2', 'km3', 'km4', 'bestKm')
+        this.calculBestScore('pts1', 'pts2', 'pts3', 'pts4', 'bestPts')
       },
       calculMoyenne () {
         let score = ''
@@ -527,25 +533,30 @@
           data[item] = scores[scores.length - 1]
         })
       },
-
+      generateId () {
+        this.editedItem.id = 'HCFR-' + (this.players.length + 1)
+      },
       editItem (item) {
         this.editedIndex = this.players.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.calculMoyenne()
         this.dialog = true
       },
-
       deleteItem (item) {
         this.editedIndex = this.players.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
       },
+      deleteItemConfirm (item) {
+        // this.players.splice(this.editedIndex, 1)
+        this.$store.dispatch('kickPlayer', item)
+          .then(() => {
+            this.players = []
+            this.calculPlayersDatasByEvent()
+          })
 
-      deleteItemConfirm () {
-        this.players.splice(this.editedIndex, 1)
         this.closeDelete()
       },
-
       close () {
         this.dialog = false
         this.$nextTick(() => {
@@ -553,7 +564,6 @@
           this.editedIndex = -1
         })
       },
-
       closeDelete () {
         this.dialogDelete = false
         this.$nextTick(() => {
@@ -561,19 +571,41 @@
           this.editedIndex = -1
         })
       },
-
       save () {
-        if (this.editedIndex > -1) {
+        if (this.editedIndex > -1) { // Modif dun joueur existant
+          this.editedItem.grade = {
+            leader: this.grade === "leader",
+            coleader: this.grade === "coLeader",
+            member: this.grade === "member",
+          }
           Object.assign(this.players[this.editedIndex], this.editedItem)
-        } else {
+        } else { // ajout d'un nouveau joueur
+          this.editedItem.grade = {
+            leader: this.grade === "leader",
+            coleader: this.grade === "coLeader",
+            member: this.grade === "member",
+          }
           this.players.push(this.editedItem)
         }
+        // on stocke dans le store
+        if (this.actualEventSelected !== null) { // via le selecteur d'event
+          this.editedItem.eventName = this.actualEventSelected.name
+        } else { // via la props
+          this.editedItem.eventName = this.actualEvent.name
+        }
+
+        this.$store.dispatch('updatePlayers', this.editedItem)
         this.calculMoyenne()
         this.calculBestScore('score1', 'score2', 'score3', 'score4', 'bestRecord')
         this.calculBestScore('km1', 'km2', 'km3', 'km4', 'bestKm')
         this.calculBestScore('pts1', 'pts2', 'pts3', 'pts4', 'bestPts')
         this.close()
       },
+      row_classes(item) {
+        if (item.kicked) {
+          return "kicked"
+        }
+      }
     },
   }
 </script>
@@ -596,13 +628,16 @@
     }
 
     &.best-record {
-      background-color: #6ba8f5;
+      background-color: #acce5f;
       color: #fff;
     }
   }
   .nickname-title {
     font-size: 15px;
     font-weight: 700;
+  }
+  .title-h2 {
+    display: inline-block;
   }
 
   ::v-deep {
@@ -613,7 +648,7 @@
     .best-record-header {
       display: flex;
       overflow: hidden;
-      background-color: #4b82d6;
+      background-color: #acce5f;
 
       span {
         width: 100%;
@@ -630,6 +665,14 @@
         &::before {
           color: #fff;
         }
+      }
+    }
+    .kicked {
+      background-color: #e52c2c;
+      color: #fff;
+
+      &:hover {
+        background-color: #e52c2c !important;
       }
     }
   }

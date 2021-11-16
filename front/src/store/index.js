@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    teamPlayers: [
+    actifPlayers: [
       {
         nickname: "Joh",
         id: "1255fds2",
@@ -22,6 +22,7 @@ export default new Vuex.Store({
         kicked: false,
       },
     ],
+    // players : [],
     players : [
       {
         nickname: "Joh",
@@ -52,7 +53,6 @@ export default new Vuex.Store({
                 pts: 100,
               },
               {
-                actif: false,
                 score: 10000,
                 km: 100,
                 pts: 100,
@@ -82,7 +82,6 @@ export default new Vuex.Store({
                 pts: 100,
               },
               {
-                actif: false,
                 score: 20000,
                 km: 100,
                 pts: 100,
@@ -112,7 +111,6 @@ export default new Vuex.Store({
                 pts: 100,
               },
               {
-                actif: false,
                 score: 4,
                 km: 100,
                 pts: 100,
@@ -142,10 +140,9 @@ export default new Vuex.Store({
                 pts: 100,
               },
               {
-                actif: false,
                 score: 5952,
                 km: 350,
-                pts: 100,
+                pts: 400,
               }
             ],
             moyenne: 0,
@@ -171,7 +168,7 @@ export default new Vuex.Store({
               {
                 score: 99999,
                 km: 150,
-                pts: 100,
+                pts: 89,
               },
               {
                 score: 10000,
@@ -181,13 +178,12 @@ export default new Vuex.Store({
               {
                 score: 10000,
                 km: 100,
-                pts: 100,
+                pts: 108,
               },
               {
-                actif: false,
                 score: 10000,
                 km: 100,
-                pts: 100,
+                pts: 108,
               }
             ],
             moyenne: 0,
@@ -214,7 +210,6 @@ export default new Vuex.Store({
                 pts: 100,
               },
               {
-                actif: false,
                 score: 10000,
                 km: 100,
                 pts: 100,
@@ -236,18 +231,17 @@ export default new Vuex.Store({
               {
                 score: 12345,
                 km: 175,
-                pts: 100,
+                pts: 200,
               },
               {
                 score: 25631,
-                km: 100,
-                pts: 100,
+                km: 200,
+                pts: 200,
               },
               {
-                actif: false,
                 score: 35698,
-                km: 100,
-                pts: 100,
+                km: 300,
+                pts: 300,
               }
             ],
             moyenne: 0,
@@ -286,7 +280,47 @@ export default new Vuex.Store({
                 pts: 100,
               },
               {
-                actif: false,
+                score: 15986,
+                km: 1200,
+                pts: 100,
+              }
+            ],
+            moyenne: 0,
+            bestRecord: 0,
+            bestKm: 0,
+            bestPts: 0,
+          },
+        ]
+      },
+      {
+        nickname: "COnnard",
+        id: "1255fds5",
+        kicked: true,
+        grade: {
+          leader: false,
+          coleader: false,
+          member: false,
+        },
+        stats: [
+          {
+            eventName: "Crash test",
+            eventParts : [
+              {
+                score: 28952,
+                km: 150,
+                pts: 100,
+              },
+              {
+                score: 0,
+                km: 175,
+                pts: 100,
+              },
+              {
+                score: 368,
+                km: 500,
+                pts: 100,
+              },
+              {
                 score: 15986,
                 km: 1200,
                 pts: 100,
@@ -327,10 +361,24 @@ export default new Vuex.Store({
       }
     ],
     eventSelected: null,
+    playersUpdated: false,
+    // newEventCreated: false
   },
   getters: {
     getPlayers (state) {
       return state.players
+    },
+    getActifPlayers (state) {
+      const actifPlayers = state.players.filter(player => player.kicked === false)
+      return actifPlayers
+    },
+    getInactifPlayers (state) {
+      const inactifPlayers = state.players.filter(player => player.kicked)
+      // state.actifPlayers.push(actifPlayers)
+      // Pour l'ajout d'un nouvel event
+      // récupère et affiche tous les joueurs non kickés
+      // Push dans players.stats if actifPlayers.id === state.player.id
+      return inactifPlayers
     },
     getPlayersName (state) {
       let players = []
@@ -376,12 +424,118 @@ export default new Vuex.Store({
   mutations: {
     updateEventSelected (state, payload) {
       state.eventSelected = payload
+    },
+    updatePlayers (state, payload) { //mets à jour les points/ km/ score des joueurs
+      state.playersUpdated = !state.playersUpdated
+      
+      const filteredPlayer = state.players.filter(player => payload.id === player.id)
+      
+      if (filteredPlayer.length > 0) { // joueur existant
+        state.players.map(player => {
+          if (filteredPlayer[0].id === player.id) {
+            for (let i =0; i < player.stats.length; i++) {
+              if (payload.eventName === player.stats[i].eventName) {
+                player.nickname = payload.nickname
+                player.grade = payload.grade
+                player.stats[i].eventName = payload.eventName
+
+                player.stats[i].eventParts[0].score = payload.score1
+                player.stats[i].eventParts[0].km = payload.km1
+                player.stats[i].eventParts[0].pts = payload.pts1
+                
+                player.stats[i].eventParts[1].score = payload.score2
+                player.stats[i].eventParts[1].km = payload.km2
+                player.stats[i].eventParts[1].pts = payload.pts2
+                
+                player.stats[i].eventParts[2].score = payload.score3
+                player.stats[i].eventParts[2].km = payload.km3
+                player.stats[i].eventParts[2].pts = payload.pts3
+                
+                player.stats[i].eventParts[3].score = payload.score4
+                player.stats[i].eventParts[3].km = payload.km4
+                player.stats[i].eventParts[3].pts = payload.pts4
+              }
+            }
+          }
+        })
+      } else { // nouveau joueur
+        state.players.push(
+          {
+            nickname: payload.nickname,
+            id: payload.id,
+            kicked: payload.kicked,
+            grade: {
+              leader: payload.grade.leader,
+              coleader: payload.grade.coleader,
+              member: payload.grade.member,
+            },
+            stats: [
+              {
+                eventName: payload.eventName,
+                eventParts : [
+                  {
+                    score: payload.score1,
+                    km: payload.km1,
+                    pts: payload.pts1,
+                  },
+                  {
+                    score: payload.score2,
+                    km: payload.km2,
+                    pts: payload.pts2,
+                  },
+                  {
+                    score: payload.score3,
+                    km: payload.km3,
+                    pts: payload.pts3,
+                  },
+                  {
+                    score: payload.score4,
+                    km: payload.km4,
+                    pts: payload.pts4,
+                  }
+                ],
+                moyenne: payload.moyenne,
+                bestRecord: payload.bestRecord,
+                bestKm: payload.bestKm,
+                bestPts: payload.bestPts,
+              }
+            ]
+          }
+        )
+      }
+      
+    },
+    kickPlayer (state, payload) {
+      state.players.filter(player => payload.id === player.id ? player.kicked = true : '')
+      // console.log(payload)
+      // console.log(state.players)
+    },
+    createNewEvent (state, payload) {
+      state.events.map(event => {
+        event.actualEvent ? event.actualEvent = false : ''
+      })
+      state.events.push(payload)
     }
   },
   actions: {
-    // setActualEvent ({ commit, payload }) {
-    //   commit("updateEventSelected", payload)
-    // }
+    createNewEvent ({ commit }, payload) {
+      return new Promise((resolve) => {
+        commit("createNewEvent", payload)
+        resolve()
+      })
+    },
+    kickPlayer ({ commit }, payload) {
+      return new Promise((resolve) => {
+        commit("kickPlayer", payload)
+        resolve()
+      })
+    },
+    updatePlayers ({ commit }, payload) {
+      return new Promise((resolve) => {
+        commit("updatePlayers", payload)
+        resolve()
+      })
+    }
   },
   modules: {
   }
