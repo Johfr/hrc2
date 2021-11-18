@@ -39,6 +39,8 @@
 
 <script>
 import NavbarUserAccount from './components/NavbarUserAccount.vue';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDatabase, ref, onValue} from "firebase/database";
 
 export default {
   components: {NavbarUserAccount },
@@ -47,6 +49,35 @@ export default {
   data: () => ({
     //
   }),
+  created () {
+    this.checkUser()
+  },
+  methods: {
+    checkUser () {
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log('connecté')
+          // Connecté
+          const uuid = user.uid
+          this.$store.dispatch('setUuid', uuid)
+
+          // récupération des infos du compte
+          const db = getDatabase()
+          
+          const userInfos = ref(db, 'users/' + uuid )
+          onValue(userInfos, (snapshot) => {
+            const userDatas = snapshot.val()
+            this.$store.dispatch('setUser', userDatas)
+          })
+        } else {
+          // User is signed out
+          console.log('déconnecté')
+          // ...
+        }
+      })
+    }
+  }
 };
 </script>
 

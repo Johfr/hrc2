@@ -15,7 +15,7 @@
       </template>
 
       <!-- Connexion  -->
-      <v-list v-if="!userId">
+      <v-list v-if="uuid === null">
         <v-list-item-group>
           <v-list-item @click="dialogSignUpFn">Créer un compte</v-list-item>
           <v-list-item @click="dialogSignInFn">Se connecter</v-list-item>
@@ -31,16 +31,17 @@
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title>HillclimbersFr</v-list-item-title>
-              <v-list-item-subtitle>Joh</v-list-item-subtitle>
-              <v-list-item-subtitle>Leader</v-list-item-subtitle>
+              <v-list-item-title>{{ user.nickname }}</v-list-item-title>
+              <v-list-item-subtitle>{{ user.teamname }}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ user.role }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
         
          <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text @click="menu = false" color="primary" >Loggout</v-btn>
+          <v-btn text :to="'/Dashboard/' + uuid" >Dashboard</v-btn>
+          <v-btn text @click="signOut" color="primary" >Loggout</v-btn>
         </v-card-actions>
       </v-card>
 
@@ -60,6 +61,7 @@
 <script>
 import FormSignIn from './forms/FormSignIn.vue'
 import FormSignUp from './forms/FormSignUp.vue'
+import { getAuth, signOut } from "firebase/auth";
 
   export default {
   components: { FormSignIn, FormSignUp },
@@ -86,6 +88,12 @@ import FormSignUp from './forms/FormSignUp.vue'
     mounted () {
     },
     computed: {
+      uuid () {
+        return this.$store.getters.getUuid
+      },
+      user () {
+        return this.$store.getters.getUser
+      }
     },
     methods: {
       dialogSignUpFn () {
@@ -98,6 +106,19 @@ import FormSignUp from './forms/FormSignUp.vue'
         this.dialogSignIn = false
         this.dialogSignUp = false
       },
+      signOut () {
+        const auth = getAuth();
+        // console.log(auth)
+        // this.menu = false
+        signOut(auth).then(() => {
+          // Sign-out successful.
+          console.log('déconnecté')
+          this.$store.dispatch('setUuid', null)
+        }).catch((error) => {
+          // An error happened.
+          console.log(error)
+        });
+      }
     }
   }
 </script>

@@ -3,9 +3,10 @@
     <h3 class="mb-10 encart-h3">{{ recordTitle }}</h3>
     <!-- {{ newEventCreated }} -->
     <ul class="list">
-      <li class="item" v-for="participation in bestParticipation" :key="participation.id">
+      <li class="item" v-for="(participation, id) in bestParticipation" :key="participation.id">
         <span class="item_title item_text" :title="participation.playerName">
-          {{ participation.playerName }}
+          <span class="item_title-user-id">#{{ id +1 }} </span>
+          <span class="item_title-user-name">{{ participation.playerName }}</span>
         </span>
         <span class="item_value item_text">
           {{ participation.nbreParticipation }}

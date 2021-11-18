@@ -329,7 +329,7 @@
       bestKm: "",
       bestPts: "",
       grade: '',
-      gradeItems: ['leader', 'coLeader', 'member'],
+      gradeItems: ['leader', 'coleader', 'member'],
       editedIndex: -1,
       editedItem: {
         nickname: '',
@@ -575,14 +575,14 @@
         if (this.editedIndex > -1) { // Modif dun joueur existant
           this.editedItem.grade = {
             leader: this.grade === "leader",
-            coleader: this.grade === "coLeader",
+            coleader: this.grade === "coleader",
             member: this.grade === "member",
           }
           Object.assign(this.players[this.editedIndex], this.editedItem)
         } else { // ajout d'un nouveau joueur
           this.editedItem.grade = {
             leader: this.grade === "leader",
-            coleader: this.grade === "coLeader",
+            coleader: this.grade === "coleader",
             member: this.grade === "member",
           }
           this.players.push(this.editedItem)

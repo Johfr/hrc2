@@ -4,9 +4,10 @@
     v-model="valid"
     lazy-validation
   >
+    <span v-if="teamExist" class="warning"> {{ teamExistMsg }} </span>
     <!-- Nom de l'équipe -->
     <v-text-field
-      v-model="equipes"
+      v-model="teamname"
       label="Nom de l'équipe"
       :rules="[v => !!v || 'Requis']"
       required
@@ -15,7 +16,7 @@
     <!-- Nbre de coleader -->
     <v-text-field
       v-model="coleaders"
-      label="Nombre de co-leaders"
+      label="Nombre de coleaders"
       type="number"
       :rules="[v => !!v || 'Requis']"
       required
@@ -41,14 +42,14 @@
     </v-select>
 
     <!-- Role -->
-    <v-select
+    <!-- <v-select
       v-model="role"
       :items="roleItems"
       label="Tu es :"
       :rules="[v => !!v || 'Merci d\'indiquer ton rôle']"
       required
     >
-    </v-select>
+    </v-select> -->
 
     <!-- Email -->
     <!-- <v-text-field
@@ -61,7 +62,7 @@
     <!-- Code -->
     <v-text-field
       v-model="teamCode"
-      label="Crée un code d'entrée à partager avec le leader / co-leader (chiffres, lettres, specials etc sans espaces)"
+      label="Crée un code d'entrée à partager avec le leader / coleader (chiffres, lettres, specials etc sans espaces)"
       :rules="[v => !!v || 'Requis']"
       required
     ></v-text-field>
@@ -92,9 +93,17 @@
 </template>
 
 <script>
+  import firebaseInit from '../Firebase/FirebaseInit.js'
+  import { getFirestore } from "firebase/firestore"
+  import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+  import { getDatabase, ref, update, onValue } from "firebase/database";
+
   export default {
     data: () => ({
+      uuid: null,
       valid: true,
+      teamExistMsg: "Ce nom d'équipe est déjà pris :/",
+      teamExist: false,
       name: '',
       // email: '',
       // emailRules: [
@@ -103,32 +112,69 @@
       // ],
       select: null,
       checkbox: false,
-      equipes: '',
+      teamname: '',
       coleaders: '',
       membres: '',
-      role: null,
-      roleItems: ['Leader', 'Co-leader'],
+      // role: null,
+      // roleItems: ['leader', 'coleader'],
       division: null,
       divisionItems: ['CC', 'Division I', 'Division II', 'Division III', 'Division IV', 'Division V', 'Division VI', 'Division VII', ],
       teamCode: '',
     }),
 
+    async created () {
+      this.uuid = this.$store.getters.getUuid
+    },
+    
     methods: {
-      validate () {
+      async validate () {
         const teamValues = [
           {
-            teamName: this.equipes,
+            teamname: this.teamname,
             leaders: this.coleaders,
             membres: this.membres,
             division: this.division,
-          },
+            teamCode: this.teamCode,
+          }
         ]
-
         this.$refs.form.validate() // retour true ou false
 
         if (this.$refs.form.validate()) {
-          this.$emit('newteam', teamValues)
-          this.$refs.form.reset()
+            // On verifie que l'équipe n'existe pas déjà puis on crée sinon on alert
+            const dbFirestore = getFirestore(firebaseInit);
+            const q = query(collection(dbFirestore, "teams"), where("teamname", "==", this.teamname))
+            const querySnapshot = await getDocs(q);
+            let docRef = null
+
+            if (querySnapshot.docs.length === 0) {
+              docRef = await addDoc(collection(dbFirestore, "teams"), ...teamValues)
+            } else {
+              querySnapshot.forEach((doc) => {
+                this.teamExist = true
+                console.log(doc.id, " => ", doc.data())
+              })
+            }
+            
+            
+            // on update le userDatas
+            const dbRealtime = getDatabase()
+            const userDb = ref(dbRealtime, 'users/' + this.uuid)
+            update(userDb, {
+              teamname: teamValues[0].teamname, 
+              teamCode: teamValues[0].teamCode, 
+              teamId: docRef.id
+            })
+            let userNewValue = null
+            onValue(userDb, (snapshot) => {
+              const data = snapshot.val()
+              console.log(data)
+              userNewValue = data
+            })
+            // on close + push en store
+            this.teamExist = false
+            this.$store.dispatch('setUser', userNewValue)
+            this.$emit('newteam', teamValues)
+            this.$refs.form.reset()
         }
       },
       close () {

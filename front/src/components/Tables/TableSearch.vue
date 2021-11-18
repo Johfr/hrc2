@@ -24,7 +24,7 @@
           <!-- Modal pour Creer une team -->
           <v-dialog
             v-model="dialog"
-            max-width="500px"
+            max-width="500px" v-if="uuid !== null && user.role === 'leader'"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -33,6 +33,7 @@
                 class=""
                 v-bind="attrs"
                 v-on="on"
+                v-if="user.teamId === ''"
               >
                 Créer 
                 <v-icon
@@ -74,7 +75,7 @@
                 <v-container>
                   <v-row>
                     <v-col>
-                      <FormInputCodeVerify @close="close" :teamName='Object.values(editedItem).join("")' />
+                      <FormInputCodeVerify @close="close" :teamname='Object.values(editedItem).join("")' />
                     </v-col>
                   </v-row>
                 </v-container>
@@ -103,7 +104,7 @@
 
       </template>
 
-      <template v-slot:item.actions="{ item }">
+      <template v-slot:item.actions="{ item }" v-if="uuid !== null">
         <v-btn
           elevation="2"
           small
@@ -111,10 +112,11 @@
         >
           Rejoindre
         </v-btn>
-        <router-link to="/teamPage">
+        <router-link :to="'/teamPage/' + item.teamId">
+          <!-- v-if="user.role.toLowerCase() === 'leader' && user.teamname.toLowerCase() === item.teamname.toLowerCase()" on vicon -->
           <v-icon
             class="ml-2 arrow-icon"
-            v-if="item.teamOwner"
+            v-if="item.teamId === user.teamId"
           >
             mdi-arrow-right-bold
           </v-icon>
@@ -148,8 +150,12 @@
 
 
 <script>
-import FormCreateTeam from '../forms/FormCreateTeam.vue'
-import FormInputCodeVerify from '../forms/FormInputCodeVerify.vue'
+  import FormCreateTeam from '../forms/FormCreateTeam.vue'
+  import FormInputCodeVerify from '../forms/FormInputCodeVerify.vue'
+  import firebaseInit from '../Firebase/FirebaseInit.js'
+  import { getFirestore } from "firebase/firestore"
+  import { collection, getDocs } from "firebase/firestore";
+  
   export default {
   components: { FormCreateTeam, FormInputCodeVerify },
     data: () => ({
@@ -158,7 +164,7 @@ import FormInputCodeVerify from '../forms/FormInputCodeVerify.vue'
       dialogDelete: false,
       search: '',
       headers: [
-        { text: 'Equipes', value: 'teamName', align: 'start' },
+        { text: 'Equipes', value: 'teamname', align: 'start' },
         { text: 'Leaders', value: 'leaders' },
         { text: 'Division', value: 'division' },
         { text: 'Membres', value: 'membres' },
@@ -167,14 +173,14 @@ import FormInputCodeVerify from '../forms/FormInputCodeVerify.vue'
       teams: [],
       editedIndex: -1,
       editedItem: {
-        teamName: '',
+        teamname: '',
         leaders: 0,
         membres: 0,
         division: '',
         teamOwner: false,
       },
       defaultItem: {
-        teamName: '',
+        teamname: '',
         leaders: 0,
         membres: 0,
         division: '',
@@ -186,6 +192,12 @@ import FormInputCodeVerify from '../forms/FormInputCodeVerify.vue'
       formTitle () {
         return this.editedIndex === -1 ? 'Team' : 'Rejoindre une team'
       },
+      uuid () {
+        return this.$store.getters.getUuid
+      },
+      user () {
+        return this.$store.getters.getUser
+      }
     },
 
     watch: {
@@ -201,34 +213,43 @@ import FormInputCodeVerify from '../forms/FormInputCodeVerify.vue'
     },
 
     created () {
+      // on requete firestore pour récupérer la liste des teams
       this.initialize()
     },
 
     methods: {
-      initialize () {
-        this.teams = [
-          {
-            teamName: 'HillclimbersFr',
-            leaders: 1,
-            membres: 47,
-            division: 'CC',
-            teamOwner: true
-          },
-          {
-            teamName: 'Ice cream sandwich',
-            leaders: 1,
-            membres: 50,
-            division: 'Division VI',
-            teamOwner: false
-          },
-          {
-            teamName: 'Eclair',
-            leaders: 1,
-            membres: 32,
-            division: 'Division III',
-            teamOwner: false
-          }
-        ]
+      async initialize () {
+        const db = getFirestore(firebaseInit);
+        const querySnapshot = await getDocs(collection(db, "teams"))
+        // console.log(doc.id, " => ", doc.data());
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          // console.log(doc.id, " => ", doc.data());
+          this.teams.push({...doc.data(), teamId: doc.id})
+        });
+        // this.teams = [
+        //   {
+        //     teamname: 'HillclimbersFr',
+        //     leaders: 1,
+        //     membres: 47,
+        //     division: 'CC',
+        //     teamOwner: true
+        //   },
+        //   {
+        //     teamname: 'Ice cream sandwich',
+        //     leaders: 1,
+        //     membres: 50,
+        //     division: 'Division VI',
+        //     teamOwner: false
+        //   },
+        //   {
+        //     teamname: 'Eclair',
+        //     leaders: 1,
+        //     membres: 32,
+        //     division: 'Division III',
+        //     teamOwner: false
+        //   }
+        // ]
       },
 
       // addTeam (payload) {
@@ -244,8 +265,8 @@ import FormInputCodeVerify from '../forms/FormInputCodeVerify.vue'
 
       joinTeam (item) {
         this.dialogJoin = true
-        this.editedIndex = this.teams.indexOf(item.teamName)
-        this.editedItem = Object.assign({}, item.teamName)
+        this.editedIndex = this.teams.indexOf(item.teamname)
+        this.editedItem = Object.assign({}, item.teamname)
         
         // console.log(this.editedIndex)
         // console.log(this.editedItem)

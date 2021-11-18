@@ -5,7 +5,7 @@
     lazy-validation
   >
     <h2>
-      {{ teamName }}
+      {{ teamname }}
     </h2>
     <v-text-field label="Code d'entrée" :rules="[v => !!v || 'Requis']"></v-text-field>
     <v-btn
@@ -27,7 +27,7 @@
 <script>
   export default {
     props: {
-      teamName: {
+      teamname: {
         type: String,
         default: () => {}
       }

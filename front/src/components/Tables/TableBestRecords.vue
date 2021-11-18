@@ -2,9 +2,10 @@
   <v-container fluid class="best-runners_container">
     <h3 class="mb-10 encart-h3">{{ recordTitle }}</h3>
     <ul class="list">
-      <li class="item" v-for="bestRecord in bestRecords" :key="bestRecord.id">
+      <li class="item" v-for="(bestRecord, id) in bestRecords" :key="bestRecord.id">
         <span class="item_title item_text" :title="bestRecord.playerName">
-          {{ bestRecord.playerName }}
+          <span class="item_title-user-id">#{{ id +1 }} </span>
+          <span class="item_title-user-name">{{ bestRecord.playerName }}</span>
         </span>
         <span class="item_value item_text">
           {{ bestRecord.bestRecord }} {{ recordName }}
