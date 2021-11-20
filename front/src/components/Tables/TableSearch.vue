@@ -24,7 +24,8 @@
           <!-- Modal pour Creer une team -->
           <v-dialog
             v-model="dialog"
-            max-width="500px" v-if="uuid !== null && user.role === 'leader'"
+            max-width="500px"
+            v-if="user.teamId === undefined && user.role === 'leader'"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -33,7 +34,6 @@
                 class=""
                 v-bind="attrs"
                 v-on="on"
-                v-if="user.teamId === ''"
               >
                 Créer 
                 <v-icon
@@ -69,13 +69,14 @@
             <v-card>
               <v-card-title>
                 <span class="text-h5">Rejoindre {{ Object.values(editedItem).join("") }}</span>
+                <span class="warning">Tu ne peux rejoindre qu'une équipe à la fois</span>
               </v-card-title>
 
               <v-card-text>
                 <v-container>
                   <v-row>
                     <v-col>
-                      <FormInputCodeVerify @close="close" :teamname='Object.values(editedItem).join("")' />
+                      <FormInputCodeVerify @close="close" :teamDatas='teamDatas' />
                     </v-col>
                   </v-row>
                 </v-container>
@@ -135,6 +136,16 @@
         {{ item.leaders }}
         <v-icon small>mdi-account-multiple</v-icon>
       </template>
+
+      <template v-slot:item.membres="{ item }">
+        {{ item.actifPlayers ? item.actifPlayers : "0" }}
+        <v-icon small>mdi-account-multiple</v-icon>
+      </template>
+
+      <template v-slot:item.leaders="{ item }">
+        {{ item.leaders ? item.leaders : "0" }}
+        <v-icon small>mdi-account-multiple</v-icon>
+      </template>
       <!-- ???  -->
       <template v-slot:no-data>
         <v-btn
@@ -171,6 +182,7 @@
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       teams: [],
+      teamDatas: null,
       editedIndex: -1,
       editedItem: {
         teamname: '',
@@ -219,6 +231,8 @@
 
     methods: {
       async initialize () {
+        // on reset l'array des teams
+        this.teams = []
         const db = getFirestore(firebaseInit);
         const querySnapshot = await getDocs(collection(db, "teams"))
         // console.log(doc.id, " => ", doc.data());
@@ -267,7 +281,7 @@
         this.dialogJoin = true
         this.editedIndex = this.teams.indexOf(item.teamname)
         this.editedItem = Object.assign({}, item.teamname)
-        
+        this.teamDatas = item
         // console.log(this.editedIndex)
         // console.log(this.editedItem)
       },
@@ -281,8 +295,9 @@
         })
       },
 
-      save (payload) {
-        this.teams.push(...payload)
+      save () {
+        // this.teams.push(...payload)
+        this.initialize()
         this.close()
       },
 

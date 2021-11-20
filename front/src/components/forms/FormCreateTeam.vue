@@ -14,22 +14,22 @@
     ></v-text-field>
 
     <!-- Nbre de coleader -->
-    <v-text-field
+    <!-- <v-text-field
       v-model="coleaders"
       label="Nombre de coleaders"
       type="number"
       :rules="[v => !!v || 'Requis']"
       required
-    ></v-text-field>
+    ></v-text-field> -->
 
     <!-- Nombres de joueurs -->
-    <v-text-field
+    <!-- <v-text-field
       v-model="membres"
       label="Nombres de joueurs"
       type="number"
       :rules="[v => !!v || 'Requis']"
       required
-    ></v-text-field>
+    ></v-text-field> -->
 
     <!-- Classement -->
     <v-select
@@ -113,8 +113,8 @@
       select: null,
       checkbox: false,
       teamname: '',
-      coleaders: '',
-      membres: '',
+      // coleaders: '',
+      // membres: '',
       // role: null,
       // roleItems: ['leader', 'coleader'],
       division: null,
@@ -131,8 +131,8 @@
         const teamValues = [
           {
             teamname: this.teamname,
-            leaders: this.coleaders,
-            membres: this.membres,
+            // leaders: this.coleaders,
+            // membres: this.membres,
             division: this.division,
             teamCode: this.teamCode,
           }
@@ -167,7 +167,7 @@
             let userNewValue = null
             onValue(userDb, (snapshot) => {
               const data = snapshot.val()
-              console.log(data)
+              // console.log(data)
               userNewValue = data
             })
             // on close + push en store

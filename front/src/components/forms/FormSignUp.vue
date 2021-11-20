@@ -8,7 +8,11 @@
       <v-container>
         <v-row>
           <v-col cols="12">
+            <!-- <p v-for="code in authErrors" :key="code.id">
+              {{ code }}
+            </p> -->
             <p class="warning" v-show="accountAlreadyExist">{{accountAlreadyExistMsg}}</p>
+            <p class="warning" v-show="invalidEmail">{{invalidEmailMsg}}</p>
             <v-form
               ref="form"
               v-model="valid"
@@ -86,9 +90,12 @@ import { getDatabase, ref, set  } from "firebase/database";
       password: '',
       confirm: '',
       passwordConfirmError: false,
+      // authErrors: [],
       passwordConfirmErrorMsg: 'Les Mdp doivent être similaires',
       accountAlreadyExist: false,
-      accountAlreadyExistMsg: 'Le compte existe déjà'
+      accountAlreadyExistMsg: 'Le compte existe déjà',
+      invalidEmail: false,
+      invalidEmailMsg: 'Format d\'email invalide',
     }),
     created () {
       firebaseInit
@@ -126,10 +133,17 @@ import { getDatabase, ref, set  } from "firebase/database";
             })
             .catch((error) => {
               const errorCode = error.code;
-              // const errorMessage = error.message;
-              // console.log(errorCode, errorMessage)
+              const errorMessage = error.message;
+              console.log(errorCode, errorMessage)
+              // if (errorCode) {
+              //   this.authErrors.push(errorCode)
+              //   console.log(errorCode, 'errorCode')
+              // }
               if (errorCode === 'auth/email-already-in-use') {
                 this.accountAlreadyExist = true
+              }
+              if (errorCode === 'auth/invalid-email') {
+                this.invalidEmail = true
               }
             });
         }

@@ -1,302 +1,309 @@
 <template>
     <!-- loading
     loading-text="Loading... Please wait" -->
-  <v-data-table
-    :headers="headers"
-    :items="players"
-    :item-class= "row_classes"
-    sort-by="calories"
-    class="elevation-1"
-  >
-    <!-- Dialogs  -->
-    <template v-slot:top>
-      <v-toolbar
-        flat
-      >
-        <v-toolbar-title>Event en cours</v-toolbar-title>
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
-
-        <v-toolbar-title>
-          <span class="title_event-name">
-            <h2 class="title-h2">{{ actualEventSelected ? actualEventSelected.name : $store.getters.getActualEvent.eventName }}</h2>
-          </span>
-          <span class="title_event-date">
-            {{ actualEventSelected ? actualEventSelected.date : $store.getters.getActualEvent.start + " - " + $store.getters.getActualEvent.end }} 
-          </span>
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-        
-        <!-- modal Create  -->
-        <v-dialog
-          v-model="dialog"
-          max-width="500px"
+    <div>
+      <!-- {{ allPlayers[1].stats[allPlayers[1].stats.length - 1].eventName }} -->
+    <v-data-table
+      :headers="headers"
+      :items="players"
+      :item-class= "row_classes"
+      sort-by="calories"
+      class="elevation-1"
+    >
+      <!-- Dialogs  -->
+      <template v-slot:top>
+        <v-toolbar
+          flat
         >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              class="mb-2"
-              v-bind="attrs"
-              v-on="on"
-              @click="generateId"
-            >
-              Joueur
-              <v-icon small>
-                mdi-plus
-              </v-icon>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">{{ formTitle.name }}</span>
-            </v-card-title>
-            
-            <!-- Champs input de la modal  -->
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="6">
-                    <v-text-field v-model="editedItem.nickname" label="Pseudo" />
-                  </v-col>
-                  <v-col cols="6">
-                    <v-text-field v-model="editedItem.id" label="Id" disabled />
-                  </v-col>
-                  <v-col cols="12">
-                    <v-select 
-                      :items="gradeItems"
-                      v-model="grade"
-                      label="Grade"
-                      required
-                    />
-                  </v-col>
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.score1" label="score1" :value="'12336'" />
-                  </v-col>
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.score2" label="score2" />
-                  </v-col>
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.score3" label="score3" />
-                  </v-col>
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.score4" label="score4" />
-                  </v-col>
-                  <!-- <v-col cols="4">
-                    <v-text-field v-mo type="number"del="editedItem.moyenne" label="Moyenne" />
-                  </v-col> -->
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.km1" label="km1" />
-                  </v-col>
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.km2" label="km2" />
-                  </v-col>
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.km3" label="km3" />
-                  </v-col>
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.km4" label="km4" />
-                  </v-col>
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.pts1" label="pts1" />
-                  </v-col>
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.pts2" label="pts2" />
-                  </v-col>
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.pts3" label="pts3" />
-                  </v-col>
-                  <v-col cols="3">
-                    <v-text-field type="number" v-model="editedItem.pts4" label="pts4" />
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            
-            <!-- Btns actions  -->
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="save"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+          <v-toolbar-title>Event en cours</v-toolbar-title>
+          <v-divider
+            class="mx-4"
+            inset
+            vertical
+          ></v-divider>
 
-        <!-- modal Delete  -->
-        <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5">Expulser ce joueur ?</v-card-title>
-            <v-card-text>
-              Ce joueur sera indiqué comme kické et apparaitra uniquement sur les events auxquels il a joué.
-            </v-card-text>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="6">
-                    <v-text-field v-model="editedItem.nickname" label="Pseudo" disabled/>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-text-field v-model="editedItem.id" label="Id" disabled/>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm({name: editedItem.nickname, id: editedItem.id})">OK</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    
-    <template v-slot:item.nickname="{ item }">
-      <v-icon v-if="item.grade.leader" small color="primary" class="mb-1">mdi-account-tie</v-icon>
-      <v-icon v-if="item.grade.coleader" small color="secondary" class="mb-1">mdi-account-supervisor</v-icon>
-      <!-- <v-icon v-if="item.member" small>mdi-account-group</v-icon> -->
-      <span class="nickname-title">
-        {{ item.nickname }}
-      </span>
-    </template>
-    
-    <template v-slot:item.score1="{ item }">
-      <div class="column-item-container">
-        <span class="score">
-          {{ item.score1 }}
-          <v-icon small color="#e52c2c" v-if="item.score1 > 30000">
-            mdi-star
-          </v-icon>
-        </span>
-        <span class="km">
-          {{ item.km1 }} Km
-        </span>
-        <span class="pts">
-          {{ item.pts1 }} pts
-        </span>
-      </div>
-    </template>
-    
-    <template v-slot:item.score2="{ item }">
-      <div class="column-item-container">
-        <span class="score">
-          {{ item.score2 }}
-          <v-icon small color="#e52c2c" v-if="item.score2 > 30000">
-            mdi-star
-          </v-icon>
-        </span>
-        <span class="km">
-          {{ item.km2 }} Km
-        </span>
-        <span class="pts">
-          {{ item.pts2 }} pts
-        </span>
-      </div>
-    </template>
-    
-    <template v-slot:item.score3="{ item }">
-      <div class="column-item-container">
-        <span class="score">
-          {{ item.score3 }}
-          <v-icon small color="#e52c2c" v-if="item.score3 > 30000">
-            mdi-star
-          </v-icon>
-        </span>
-        <span class="km">
-          {{ item.km3 }} Km
-        </span>
-        <span class="pts">
-          {{ item.pts3 }} pts
-        </span>
-      </div>
-    </template>
-    
-    <template v-slot:item.score4="{ item }">
-      <div class="column-item-container">
-        <span class="score">
-          {{ item.score4 }}
-          <v-icon small color="#e52c2c" v-if="item.score4 > 30000">
-            mdi-star
-          </v-icon>
-        </span>
-        <span class="km">
-          {{ item.km4 }} Km
-        </span>
-        <span class="pts">
-          {{ item.pts4 }} pts
-        </span>
-      </div>
-    </template>
-    
-    <template v-slot:item.bestRecord="{ item }">
-      <div class="column-item-container best-record">
-        <span class="score">
-          {{ item.bestRecord }}
-        </span>
-        <span class="km">
-          {{ item.bestKm }} Km
-        </span>
-        <span class="pts">
-          {{ item.bestPts }} pts
-        </span>
-      </div>
-    </template>
-    
-    <template v-slot:item.moyenne="{ item }">
-      <div class="column-item-container">
-        <span class="score">
-          {{ !isNaN(item.moyenne.score) ? item.moyenne.score : 0 }}
-        </span>
-        <span class="km">
-          {{ !isNaN(item.moyenne.km) ? item.moyenne.km : 0 }} Km
-        </span>
-        <span class="pts">
-          {{ !isNaN(item.moyenne.pts) ? item.moyenne.pts : 0 }} pts
-        </span>
-      </div>
-    </template>
+          <v-toolbar-title>
+            <span class="title_event-name">
+              <h2 class="title-h2">{{ actualEventSelected ? actualEventSelected.name : $store.getters.getActualEvent.eventName }}</h2>
+            </span>
+            <span class="title_event-date">
+              {{ actualEventSelected ? actualEventSelected.date : $store.getters.getActualEvent.start + " - " + $store.getters.getActualEvent.end }} 
+            </span>
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+          
+          <!-- modal Create / Update -->
+          <v-dialog
+            v-model="dialog"
+            max-width="500px"
+            v-if="uuid && user.role === 'leader'"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                dark
+                class="mb-2"
+                v-bind="attrs"
+                v-on="on"
+                @click="generateId"
+              >
+                Joueur
+                <v-icon small>
+                  mdi-plus
+                </v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">{{ formTitle.name }}</span>
+              </v-card-title>
+              
+              <!-- Champs input de la modal  -->
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="6">
+                      <v-text-field v-model="editedItem.nickname" label="Pseudo" />
+                    </v-col>
+                    <v-col cols="6">
+                      <v-text-field v-model="editedItem.id" label="Id" disabled />
+                    </v-col>
+                    {{ editedItem }}
+                    <v-col cols="12">
+                      <v-select 
+                        :items="gradeItems"
+                        v-model="editedItem.grade"
+                        label="Grade"
+                        required
+                      />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.score1" label="score1" :value="'12336'" />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.score2" label="score2" />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.score3" label="score3" />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.score4" label="score4" />
+                    </v-col>
+                    <!-- <v-col cols="4">
+                      <v-text-field v-mo type="number"del="editedItem.moyenne" label="Moyenne" />
+                    </v-col> -->
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.km1" label="km1" />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.km2" label="km2" />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.km3" label="km3" />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.km4" label="km4" />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.pts1" label="pts1" />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.pts2" label="pts2" />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.pts3" label="pts3" />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field type="number" v-model="editedItem.pts4" label="pts4" />
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              
+              <!-- Btns actions  -->
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="close"
+                >
+                  Cancel
+                </v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="save"
+                >
+                  Ajouter
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
 
-    <template v-slot:item.actions="{ item }">
-      <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
-      >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        v-if="!item.kicked"
-        small
-        @click="deleteItem(item)"
-      >
-        mdi-delete
-      </v-icon>
-    </template>
-    
-    <template v-slot:no-data>
-      <v-btn
-        color="primary"
-        @click="initialize"
-      >
-        Reset
-      </v-btn>
-    </template>
-  </v-data-table>
+          <!-- modal Delete  -->
+          <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-card>
+              <v-card-title class="text-h5">Expulser ce joueur ?</v-card-title>
+              <v-card-text>
+                Ce joueur sera indiqué comme kické et apparaitra uniquement sur les events auxquels il a joué.
+              </v-card-text>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="6">
+                      <v-text-field v-model="editedItem.nickname" label="Pseudo" disabled/>
+                    </v-col>
+                    <v-col cols="6">
+                      <v-text-field v-model="editedItem.id" label="Id" disabled/>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm({name: editedItem.nickname, id: editedItem.id})">OK</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      
+      <template v-slot:item.nickname="{ item, index }">
+        #{{ index + 1 }}
+        {{ item.grade }}
+        <v-icon v-if="item.grade === 'leader'" small color="primary" class="mb-1">mdi-account-tie</v-icon>
+        <v-icon v-if="item.grade === 'coleader'" small color="secondary" class="mb-1">mdi-account-supervisor</v-icon>
+        <!-- <v-icon v-if="item.member" small>mdi-account-group</v-icon> -->
+        <span class="nickname-title">
+          {{ item.nickname }}
+        </span>
+      </template>
+      
+      <template v-slot:item.score1="{ item }">
+        <div class="column-item-container">
+          <span class="score">
+            {{ item.score1 }}
+            <v-icon small color="#e52c2c" v-if="item.score1 > 30000">
+              mdi-star
+            </v-icon>
+          </span>
+          <span class="km">
+            {{ item.km1 }} Km
+          </span>
+          <span class="pts">
+            {{ item.pts1 }} pts
+          </span>
+        </div>
+      </template>
+      
+      <template v-slot:item.score2="{ item }">
+        <div class="column-item-container">
+          <span class="score">
+            {{ item.score2 }}
+            <v-icon small color="#e52c2c" v-if="item.score2 > 30000">
+              mdi-star
+            </v-icon>
+          </span>
+          <span class="km">
+            {{ item.km2 }} Km
+          </span>
+          <span class="pts">
+            {{ item.pts2 }} pts
+          </span>
+        </div>
+      </template>
+      
+      <template v-slot:item.score3="{ item }">
+        <div class="column-item-container">
+          <span class="score">
+            {{ item.score3 }}
+            <v-icon small color="#e52c2c" v-if="item.score3 > 30000">
+              mdi-star
+            </v-icon>
+          </span>
+          <span class="km">
+            {{ item.km3 }} Km
+          </span>
+          <span class="pts">
+            {{ item.pts3 }} pts
+          </span>
+        </div>
+      </template>
+      
+      <template v-slot:item.score4="{ item }">
+        <div class="column-item-container">
+          <span class="score">
+            {{ item.score4 }}
+            <v-icon small color="#e52c2c" v-if="item.score4 > 30000">
+              mdi-star
+            </v-icon>
+          </span>
+          <span class="km">
+            {{ item.km4 }} Km
+          </span>
+          <span class="pts">
+            {{ item.pts4 }} pts
+          </span>
+        </div>
+      </template>
+      
+      <template v-slot:item.bestRecord="{ item }">
+        <div class="column-item-container best-record">
+          <span class="score">
+            {{ item.bestRecord }}
+          </span>
+          <span class="km">
+            {{ item.bestKm }} Km
+          </span>
+          <span class="pts">
+            {{ item.bestPts }} pts
+          </span>
+        </div>
+      </template>
+      
+      <template v-slot:item.moyenne="{ item }">
+        <div class="column-item-container">
+          <span class="score">
+            {{ !isNaN(item.moyenne.score) ? item.moyenne.score : 0 }}
+          </span>
+          <span class="km">
+            {{ !isNaN(item.moyenne.km) ? item.moyenne.km : 0 }} Km
+          </span>
+          <span class="pts">
+            {{ !isNaN(item.moyenne.pts) ? item.moyenne.pts : 0 }} pts
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-icon
+          small
+          class="mr-2"
+          @click="editItem(item)"
+        >
+          mdi-pencil
+        </v-icon>
+        <v-icon
+          v-if="!item.kicked"
+          small
+          @click="deleteItem(item)"
+        >
+          mdi-delete
+        </v-icon>
+      </template>
+      
+      <template v-slot:no-data>
+        <v-btn
+          color="primary"
+          @click="initialize"
+        >
+          {{ reset }}
+        </v-btn>
+      </template>
+    </v-data-table>
+    </div>
 </template>
 
 
@@ -311,6 +318,7 @@
     data: () => ({
       dialog: false,
       dialogDelete: false,
+      reset: "Recharger",
       headers: [
         { text: 'Joueurs', align: 'center', value: 'nickname'},
         { text: 'Score1', align: 'center', value: 'score1' },
@@ -335,11 +343,7 @@
         nickname: '',
         id: "",
         kicked: false,
-        grade: {
-          leader: false,
-          coleader: false,
-          member: false,
-        },
+        grade: '',
         eventName: "",
         score1: 0,
         score2: 0,
@@ -362,11 +366,7 @@
         nickname: '',
         id: "",
         kicked: false,
-        grade: {
-          leader: false,
-          coleader: false,
-          member: false,
-        },
+        grade: '',
         eventName: "",
         score1: 0,
         score2: 0,
@@ -391,12 +391,25 @@
         return this.actualEventSelected || this.actualEvent
       },
       actualEventSelected () {
+        // console.log('watch store event selected', this.$store.state.eventSelected)
         return this.$store.state.eventSelected
       },
       playersDatas () {
         return this.actualEvent.date
-      }
+      },
+      uuid () {
+       return this.$store.getters.getUuid
+      },
+      user () {
+       return this.$store.getters.getUser
+      },
+      // getStorePlayers () {
+      //   return this.$store.state.players
+      // }
     },
+    // mounted () {
+    //   console.log(this.players)
+    // },
     watch: {
       dialog (val) {
         val || this.close()
@@ -409,10 +422,14 @@
         
         this.allEvents.map((event) => {
           if (event.eventName === this.actualEventSelected.name) {
+
             this.allPlayers.map((player) => {
               player.stats.map((stat, i) => {
                 if (event.eventName === stat.eventName) {
                   const actualEventIndex = i
+                  // this.defaultItem.grade.leader = player.grade.leader
+                  // this.defaultItem.grade.coleader = player.grade.coleader
+                  // this.defaultItem.grade.member = player.grade.member
                   this.players.push({
                     nickname: player.nickname,
                     id: player.id,
@@ -440,16 +457,23 @@
               })
             })
           }
+          
         })
+        // console.log('this.players', this.players)
       
         this.calculBestScore('score1', 'score2', 'score3', 'score4', 'bestRecord')
         this.calculBestScore('km1', 'km2', 'km3', 'km4', 'bestKm')
         this.calculBestScore('pts1', 'pts2', 'pts3', 'pts4', 'bestPts')
         this.calculMoyenne()
-      }
+      },
+      // getStorePlayers () {
+      //   this.allPlayers = this.getStorePlayers
+      // }
     },
     created () {
-      this.allPlayers = this.$store.getters.getPlayers
+      this.allPlayers = this.$store.getters.getPlayers //this.getStorePlayers
+      
+      // console.log(this.allPlayers)
       this.initialize() // initie l'index de l'event
     },
     // mounted () {
@@ -457,8 +481,12 @@
     // },
     methods: {
       initialize () {
-        this.allEvents = this.$store.getters.getEvents
-        this.calculPlayersDatasByEvent()
+        // this.pullDatas()
+        // .then(() => {
+          this.allPlayers = this.$store.getters.getPlayers 
+          this.allEvents = this.$store.getters.getEvents
+          this.calculPlayersDatasByEvent()
+        // })
       },
       calculPlayersDatasByEvent () {
         this.allEvents.map((event) => {
@@ -573,18 +601,22 @@
       },
       save () {
         if (this.editedIndex > -1) { // Modif dun joueur existant
-          this.editedItem.grade = {
-            leader: this.grade === "leader",
-            coleader: this.grade === "coleader",
-            member: this.grade === "member",
-          }
+          // this.editedItem.grade = this.grade
+          // {
+          //   leader: this.grade === "leader",
+          //   coleader: this.grade === "coleader",
+          //   member: this.grade === "member",
+          // }
+          console.log(this.editedItem)
           Object.assign(this.players[this.editedIndex], this.editedItem)
         } else { // ajout d'un nouveau joueur
-          this.editedItem.grade = {
-            leader: this.grade === "leader",
-            coleader: this.grade === "coleader",
-            member: this.grade === "member",
-          }
+          // this.editedItem.grade = this.grade
+          // {
+          //   leader: this.grade === "leader",
+          //   coleader: this.grade === "coleader",
+          //   member: this.grade === "member",
+          // }
+          console.log(this.editedItem)
           this.players.push(this.editedItem)
         }
         // on stocke dans le store

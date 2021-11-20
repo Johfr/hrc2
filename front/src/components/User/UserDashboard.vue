@@ -2,7 +2,8 @@
   <v-container class="team-list-container">
     <v-row class="">
       <div v-for="user in userDatas" :key="user.id">
-        {{ user }}
+        <h1 class="warning">WIP : Work In Progress</h1>
+        <p class="warning">Toutes les fonctionnalités ne sont pas encore implémentées</p>
         <v-col cols="12">
           <h1>Bienvenue {{ user.nickname }}</h1>
         </v-col>
@@ -10,9 +11,7 @@
           <p class="user-dashboard-info">
             <span>Ici tu vas pouvoir modifier tes informations. </span>
             <span>Il te sera possible également de supprimer ton compte (action irréversible). </span>
-            <span>Si tu es leader de ton équipe la suppression de ton compte entrainera la suppression de l'équipe. </span>
-            <span>Si tu souhaites transferer l'équipe il te suffira de modifier l'id de l'équipe dans le champ ci-dessous par celui d'un des membres de ton équipe. </span>
-            <span>Cet id t'identifie comme le leader du groupe. </span>
+            <span>Les modifications apportées à ton compte n'auront aucun impact sur les scores rentrés dans le tableau de la teamp page</span>
           </p>
         </v-col>
         <v-container>
@@ -36,16 +35,22 @@
                             label="nickname"
                           ></v-text-field>
                         </v-col>
+                        <v-col cols="12">
+                          <v-text-field
+                            v-model="editedItem.teamCode"
+                            label="teamname"
+                          ></v-text-field>
+                        </v-col>
                         <!-- <v-col cols="12">
                           <v-text-field
-                            v-model="editedItem.teamname"
-                            label="teamname"
+                            v-model="editedItem.teamId"
+                            label="teamId"
                           ></v-text-field>
                         </v-col> -->
                         <v-col cols="12">
                           <v-text-field
-                            v-model="editedItem.teamId"
-                            label="teamId"
+                            v-model="editedItem.teamCode"
+                            label="teamCode"
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12">
@@ -155,6 +160,16 @@
                     {{ user.teamId }}
                   </span>
                 </div>
+                
+                <!-- teamCode  -->
+                <div class="user-info-container">
+                  <span class="user-label">
+                    teamCode :
+                  </span>
+                  <span class="user-info">
+                    {{ user.teamCode }}
+                  </span>
+                </div>
               </div>
             </v-col>
           </v-row>
@@ -175,6 +190,7 @@ components: {},
     user: null,
     nickname: '',
     teamname: '',
+    teamCode: '',
     teamId: '',
     role: '',
     roleItems: ['leader', 'coleader', 'membre'],
@@ -184,6 +200,7 @@ components: {},
     editedItem: {
       nickname: '',
       teamname: '',
+      teamCode: '',
       teamId: '',
       role: '',
       email: '',
@@ -192,6 +209,7 @@ components: {},
     defaultItem: {
       nickname: '',
       teamname: '',
+      teamCode: '',
       teamId: '',
       role: '',
       email: '',

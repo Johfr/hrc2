@@ -10,13 +10,18 @@
       <SaveBtns />
     </v-col>
   </v-row>
+
+  <!-- Statistique des membres  -->
   <v-row>
     <h1 class="col-6">Statistique des membres</h1>
   </v-row>
+
+  <!-- Nom de l'équipe  -->
   <v-row>
     <h2 class="col-6">HillClimbersFr</h2>
   </v-row>
   
+  <!-- selecteur d'events  -->
   <v-row>
     <v-col md="9" sm="6" cols="12">
       <v-select
@@ -33,7 +38,8 @@
       <NewEvent @new-event-created="newEventCreatedFn" />
     </v-col>
   </v-row>
-  <v-row>
+
+  <v-row v-if="dataPulledSuccefuly">
     <!-- Meilleurs scores : filtre tous les scores d'1 joueurs,
     retourne le meilleur puis compare avec tous les autres joueurs et
     retourne le meilleur score + nom du joueur -->
@@ -62,6 +68,8 @@ import SaveBtns from '../components/SaveBtns.vue'
 import TableMembers from '../components/TableMembers.vue'
 import TableBestParticipation from '../components/Tables/TableBestParticipation.vue'
 import TableBestRecords from '../components/Tables/TableBestRecords.vue'
+  import firebaseInit from '../components/Firebase/FirebaseInit.js'
+  import { getFirestore, doc, getDoc } from "firebase/firestore"
 
   export default {
     name: 'Home',
@@ -72,21 +80,25 @@ import TableBestRecords from '../components/Tables/TableBestRecords.vue'
         allEvents: null, // datas API provenant du store
         eventsItems: [],
         events: "",
-        newEventCreated: false
+        newEventCreated: false,
+        dataPulledSuccefuly: false
       }
     },
     computed: {
+      // allEvents () {
+      //   return this.$store.getters.getEvents
+      // },
       actualEventFn () {
         return this.actualEvent
       }
     },
     components: {
-        TableMembers,
-        TableBestRecords,
-        NewEvent,
-        TableBestParticipation,
-        Modal,
-        SaveBtns,
+      TableMembers,
+      TableBestRecords,
+      NewEvent,
+      TableBestParticipation,
+      Modal,
+      SaveBtns,
     },
     watch: {
       events (val) {
@@ -103,14 +115,21 @@ import TableBestRecords from '../components/Tables/TableBestRecords.vue'
       },
     },
     created () {
-      this.initEvent()
-      this.allEvents.map((event, index) => {
-        if (event.eventName) {
-          this.actualEvent.name = event.eventName
-          this.actualEvent.date = event.start + " - " + event.end
-          this.actualEvent.index = index
-        }
-      })
+      this.pullDatas()
+        .then(() => {
+          this.initEvent()
+          this.allEvents.map((event, index) => {
+            if (event.eventName) {
+              this.actualEvent.name = event.eventName
+              this.actualEvent.date = event.start + " - " + event.end
+              this.actualEvent.index = index
+            }
+          })
+        })
+        .then(() => {
+          // une fois qu'on est sur que tout est bien récupéré on affiche les tableau
+          this.dataPulledSuccefuly = true
+        })
     },
     methods: {
       initEvent () {
@@ -119,13 +138,51 @@ import TableBestRecords from '../components/Tables/TableBestRecords.vue'
           this.eventsItems.push(event.eventName)
         })
       },
+      async pullDatas () {
+        const teamId = window.location.pathname.split('/')[2]
+        try {
+          const db = getFirestore(firebaseInit)
+          const teamRef = doc(db, "teams", teamId)
+          const docSnap = await getDoc(teamRef)
+          
+          // On vérifie que l'équipe existe bien et que l'array players existe
+          if (docSnap.exists()) {
+            if (docSnap.data().players != undefined) {
+              const playersStored = docSnap.data().players
+              this.$store.dispatch('setPlayers', playersStored)
+              // console.log('playersStored', docSnap)
+              
+              this.dataPullSuccess = true
+              setTimeout(() => {
+                this.dataPullSuccess = false
+                this.dataPullConfirm = false
+                console.log('data pullé')
+              }, 4000)
+            }
+            if (docSnap.data().events != undefined) {
+              const eventsStored = docSnap.data().events
+              this.$store.dispatch('setEvents', eventsStored)
+            }
+          } else {
+            this.nodataFound = true
+            console.log('aucune donnée trouvée')
+          }
+        } catch (e) {
+          console.log('catched', e)
+          this.alertFailed = true
+          this.dataPullConfirm = false
+          this.dataPullSuccess = false
+        }
+      },
       newEventCreatedFn () {
         this.initEvent()
+        // console.log(this.$store.getters.getPlayers)
         // on trigger de suite le selecteur d'events avec la nouvelle valeur
         this.events = this.allEvents[this.allEvents.length - 1].eventName
         // on initie le nouveau tableau avec les joueurs actifs de l'équipe
         this.newEventCreated = true
-        this.$store.getters.getPlayers.map(player => {
+        const players = this.$store.getters.getPlayers
+        players.map(player => {
           if (!player.kicked) {
             player.stats.push(
               {
@@ -159,7 +216,9 @@ import TableBestRecords from '../components/Tables/TableBestRecords.vue'
               }
             )
           }
+          // return players
         })
+        // this.$store.dispatch('setPlayers', players)
       }
     }
   }

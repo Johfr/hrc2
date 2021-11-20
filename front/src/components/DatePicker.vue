@@ -6,8 +6,8 @@
       label="Date range"
       prepend-icon="mdi-calendar"
       readonly
-    ></v-text-field> -->
-    <!-- model: {{ dates }} -->
+    ></v-text-field>
+    model: {{ dates }} -->
   </div>
 </template>
 
@@ -31,6 +31,6 @@
         }
         this.$emit('emit-dates', datesFormatted)
       }
-    }
+    },
   }
 </script>

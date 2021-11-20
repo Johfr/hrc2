@@ -20,7 +20,7 @@
   export default {
     data () {
       return {
-        allPlayers: null,
+        // allPlayers: null,
         actualEvent: {},
         bestRecords: null,
       }
@@ -44,7 +44,7 @@
       },
     },
     created () {
-      this.allPlayers = this.$store.getters.getPlayers
+      // allPlayers = this.$store.getters.getPlayers
       
       this.allEvents = this.$store.getters.getEvents
       
@@ -63,7 +63,10 @@
       },
       playersUpdated () {
         return this.$store.state.playersUpdated
-      }
+      },
+      allPlayers () {
+        return this.$store.getters.getPlayers
+      },
     },
 
     watch: {
@@ -71,8 +74,8 @@
         this.calculBestPlayerByPts(this.actualEventSelected.name)
       },
       playersUpdated () {
-        this.allPlayers = this.$store.getters.getPlayers
-        // console.log(this.allPlayers)
+        // allPlayers = this.$store.getters.getPlayers
+        // console.log(allPlayers)
         
         if (this.actualEventSelected !== null) { // via le selecteur d'event
           this.calculBestPlayerByPts(this.actualEventSelected.name)
@@ -99,7 +102,12 @@
                 return a - b;
               })
               bestPlayer = playerScore[playerScore.length - 1]
-              bestPlayers.push({playerName: player.nickname ,bestRecord : bestPlayer})
+              if (this.recordKey === 'pts') {
+                const bestPlayer = parseInt(playerScore[0]) + parseInt(playerScore[1]) + parseInt(playerScore[2]) + parseInt(playerScore[3])
+                bestPlayers.push({playerName: player.nickname ,bestRecord : bestPlayer})
+              } else {
+                bestPlayers.push({playerName: player.nickname ,bestRecord : bestPlayer})
+              }
             }
           })
         })

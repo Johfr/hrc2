@@ -61,6 +61,7 @@ export default {
           // Connecté
           const uuid = user.uid
           this.$store.dispatch('setUuid', uuid)
+          localStorage.setItem('uuid', uuid)
 
           // récupération des infos du compte
           const db = getDatabase()
@@ -73,6 +74,7 @@ export default {
         } else {
           // User is signed out
           console.log('déconnecté')
+          localStorage.setItem('uuid', null)
           // ...
         }
       })

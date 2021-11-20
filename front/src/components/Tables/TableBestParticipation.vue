@@ -99,17 +99,14 @@
               // calcul du nombre de participation
               // si score1 < score2 < score3 < score4 alors 4 partcipations
               let participation = 0
-
-              if (playerScore[0] > 0) {
+              
+              if (playerScore[0] != 0) {
                 participation += 1
               }
-              if (playerScore[0] < playerScore[1]) {
+              if (playerScore[1] != 0) {
                 participation += 1
               }
-              if (playerScore[1] < playerScore[2]) {
-                participation += 1
-              }
-              if (playerScore[2] < playerScore[3]) {
+              if (playerScore[2] != 0) {
                 participation += 1
               }
               nbreParticipation.push({playerName: player.nickname, nbreParticipation : participation})

@@ -107,13 +107,17 @@ import { getAuth, signOut } from "firebase/auth";
         this.dialogSignUp = false
       },
       signOut () {
-        const auth = getAuth();
+        const auth = getAuth()
         // console.log(auth)
         // this.menu = false
-        signOut(auth).then(() => {
+        signOut(auth)
+        .then(() => {
           // Sign-out successful.
           console.log('déconnecté')
-          this.$store.dispatch('setUuid', null)
+          
+          // this.$store.dispatch('setUuid', null)
+          this.$store.dispatch('cleanStore')
+          window.location = '/'
         }).catch((error) => {
           // An error happened.
           console.log(error)
