@@ -27,7 +27,7 @@
         <v-list>
           <v-list-item>
             <v-list-item-avatar>
-              <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" >
+              <img class="navbar-avatar-img" src="/img/user_avatar.jpg" alt="John" >
             </v-list-item-avatar>
 
             <v-list-item-content>
@@ -128,4 +128,7 @@ import { getAuth, signOut } from "firebase/auth";
 </script>
 
 <style lang="scss" scoped>
+.navbar-avatar-img {
+  filter: brightness(1.4);
+}
 </style>

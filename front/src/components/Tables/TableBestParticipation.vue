@@ -4,16 +4,18 @@
     <!-- {{ newEventCreated }} -->
     <ul class="list">
       <li class="item" v-for="(participation, id) in bestParticipation" :key="participation.id">
-        <span class="item_title item_text" :title="participation.playerName">
-          <span class="item_title-user-id">#{{ id +1 }} </span>
-          <span class="item_title-user-name">{{ participation.playerName }}</span>
-        </span>
-        <span class="item_value item_text">
-          {{ participation.nbreParticipation }}
-          <span class="item_fff item_text" :title='participation.nbreParticipation > 1 ? participation.nbreParticipation + "participations" : participation.nbreParticipation + "participation"'>
-            {{ participation.nbreParticipation > 1 ? "parts.." : "part.."}}
+        <div :class="['item-container', {'warning' : participation.kicked}]">
+          <span class="item_title item_text" :title="participation.playerName">
+            <span class="item_title-user-id">#{{ id +1 }} </span>
+            <span class="item_title-user-name">{{ participation.playerName }}</span>
           </span>
-        </span>
+          <span class="item_value item_text">
+            {{ participation.nbreParticipation }}
+            <span class="item_fff item_text" :title='participation.nbreParticipation > 1 ? participation.nbreParticipation + "participations" : participation.nbreParticipation + "participation"'>
+              {{ participation.nbreParticipation > 1 ? "parts.." : "part.."}}
+            </span>
+          </span>
+        </div>
       </li>
     </ul>
   </v-container>
@@ -112,7 +114,7 @@
               if (playerScore[3] != 0) {
                 participation += 1
               }
-              nbreParticipation.push({playerName: player.nickname, nbreParticipation : participation})
+              nbreParticipation.push({playerName: player.nickname, nbreParticipation : participation, kicked: player.kicked })
 
             }
           })
@@ -141,10 +143,13 @@
 }
 .list {
   padding-left: 0;
+
   .item {
+    list-style-type: none;
+  }
+  .item-container {
     display: flex;
     justify-content: space-between;
-    list-style-type: none;
     margin-bottom: 5px;
 
     .item_title {

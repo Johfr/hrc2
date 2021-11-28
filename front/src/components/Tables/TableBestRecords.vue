@@ -3,13 +3,15 @@
     <h3 class="mb-10 encart-h3">{{ recordTitle }}</h3>
     <ul class="list">
       <li class="item" v-for="(bestRecord, id) in bestRecords" :key="bestRecord.id">
-        <span class="item_title item_text" :title="bestRecord.playerName">
-          <span class="item_title-user-id">#{{ id +1 }} </span>
-          <span class="item_title-user-name">{{ bestRecord.playerName }}</span>
-        </span>
-        <span class="item_value item_text">
-          {{ bestRecord.bestRecord }} {{ recordName }}
-        </span>
+        <div :class="['item-container', {'warning' : bestRecord.kicked}]">
+          <span class="item_title item_text" :title="bestRecord.playerName">
+            <span class="item_title-user-id">#{{ id +1 }} </span>
+            <span class="item_title-user-name">{{ bestRecord.playerName }}</span>
+          </span>
+          <span class="item_value item_text">
+            {{ bestRecord.bestRecord }} {{ recordName }}
+          </span>
+        </div>
       </li>
     </ul>
   </v-container>
@@ -104,9 +106,9 @@
               bestPlayer = playerScore[playerScore.length - 1]
               if (this.recordKey === 'pts') {
                 const bestPlayer = parseInt(playerScore[0]) + parseInt(playerScore[1]) + parseInt(playerScore[2]) + parseInt(playerScore[3])
-                bestPlayers.push({playerName: player.nickname ,bestRecord : bestPlayer})
+                bestPlayers.push({playerName: player.nickname ,bestRecord : bestPlayer, kicked: player.kicked})
               } else {
-                bestPlayers.push({playerName: player.nickname ,bestRecord : bestPlayer})
+                bestPlayers.push({playerName: player.nickname ,bestRecord : bestPlayer, kicked: player.kicked})
               }
             }
           })
@@ -136,7 +138,11 @@
 }
 .list {
   padding-left: 0;
+
   .item {
+    list-style-type: none;
+  }
+  .item-container {
     display: flex;
     justify-content: space-between;
     list-style-type: none;
