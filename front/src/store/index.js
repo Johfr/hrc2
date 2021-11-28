@@ -7,163 +7,26 @@ export default new Vuex.Store({
   state: {
     uuid: null,
     user: {},
-    actifPlayers: [
-      {
-        nickname: "Joh",
-        id: "1255fds2",
-        kicked: false,
-      },
-      {
-        nickname: "Jess",
-        id: "1255fds3",
-        kicked: false,
-      },
-      {
-        nickname: "Jack",
-        id: "1255fds4",
-        kicked: false,
-      },
-    ],
-    players : [],
-    // players : [ // id:1255fds4
+    players : [], // id:1255fds4
+    // players : [
     //   {
     //     nickname: "Joh",
     //     id: "1",
     //     kicked: false,
-    //     grade: {
-    //       leader: true,
-    //       coleader: false,
-    //       member: false,
-    //     },
+    //     grade: 'leader',
     //     stats: [
     //       {
-    //         eventName: "Jus de citrouille0",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 99999,
-    //             km: 150,
-    //             pts: 100,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 10000,
-    //             km: 175,
-    //             pts: 100,
-    //           },
-    //           {
-    //             score: 10000,
-    //             km: 100,
-    //             pts: 100,
-    //           },
-    //           {
-    //             score: 10000,
-    //             km: 100,
-    //             pts: 100,
-    //           }
-    //         ],
-    //         moyenne: 0,
-    //         bestRecord: 0,
-    //         bestKm: 0,
-    //         bestPts: 0,
-    //       },
-    //       {
-    //         eventName: "Jus de citrouille",
-    //         eventParts : [
-    //           {
-    //             score: 10000,
-    //             km: 150,
-    //             pts: 100,
-    //           },
-    //           {
-    //             score: 19000,
-    //             km: 175,
-    //             pts: 100,
-    //           },
-    //           {
-    //             score: 19500,
-    //             km: 100,
-    //             pts: 100,
-    //           },
-    //           {
-    //             score: 20000,
-    //             km: 100,
-    //             pts: 100,
-    //           }
-    //         ],
-    //         moyenne: 0,
-    //         bestRecord: 0,
-    //         bestKm: 0,
-    //         bestPts: 0,
-    //       },
-    //       {
-    //         eventName: "Jus de citrouille2",
-    //         eventParts : [
-    //           {
-    //             score: 1,
-    //             km: 150,
-    //             pts: 100,
-    //           },
-    //           {
-    //             score: 2,
-    //             km: 175,
-    //             pts: 100,
-    //           },
-    //           {
-    //             score: 3,
-    //             km: 100,
-    //             pts: 100,
-    //           },
-    //           {
-    //             score: 4,
-    //             km: 100,
-    //             pts: 100,
-    //           }
-    //         ],
-    //         moyenne: 0,
-    //         bestRecord: 0,
-    //         bestKm: 0,
-    //         bestPts: 0,
-    //       },
-    //       {
-    //         eventName: "Crash test",
-    //         eventParts : [
-    //           {
-    //             score: 6523,
-    //             km: 75,
-    //             pts: 100,
-    //           },
-    //           {
-    //             score: 6958,
-    //             km: 175,
-    //             pts: 100,
-    //           },
-    //           {
-    //             score: 7200,
-    //             km: 200,
-    //             pts: 100,
-    //           },
-    //           {
-    //             score: 5952,
-    //             km: 350,
-    //             pts: 400,
-    //           }
-    //         ],
-    //         moyenne: 0,
-    //         bestRecord: 0,
-    //         bestKm: 0,
-    //         bestPts: 0,
-    //       },
-    //       {
-    //         eventName: "Let's goooooooo!",
-    //         eventParts : [
-    //           {
-    //             score: 23949,
-    //             km: 18,
-    //             pts: 300,
-    //           },
-    //           {
-    //             score: 24843,
-    //             km: 141,
-    //             pts: 600,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -187,24 +50,20 @@ export default new Vuex.Store({
     //     nickname: "007",
     //     id: "2",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: true,
-    //       member: false,
-    //     },
+    //     grade: 'coleader',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 21315,
-    //             km: 13,
-    //             pts: 280,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 20978,
-    //             km: 108,
-    //             pts: 542,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -228,24 +87,20 @@ export default new Vuex.Store({
     //     nickname: "Nicoz",
     //     id: "3",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: true,
-    //       member: false,
-    //     },
+    //     grade: 'coleader',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 10998,
+    //             score: 0,
     //             km: 0,
-    //             pts: 87,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 10253,
-    //             km: 63,
-    //             pts: 138,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -269,24 +124,20 @@ export default new Vuex.Store({
     //     nickname: "OursPoiluDuQ",
     //     id: "4",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 11791,
-    //             km: 12,
-    //             pts: 131,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 13551,
-    //             km: 140,
-    //             pts: 271,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -310,24 +161,20 @@ export default new Vuex.Store({
     //     nickname: "La censurix",
     //     id: "5",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 4059,
-    //             km: 16,
-    //             pts: 17,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 3955,
-    //             km: 112,
-    //             pts: 28,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -351,24 +198,20 @@ export default new Vuex.Store({
     //     nickname: "Tuvema",
     //     id: "6",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 5559,
-    //             km: 14,
-    //             pts: 19,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 8366,
-    //             km: 60,
-    //             pts: 45,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -392,24 +235,20 @@ export default new Vuex.Store({
     //     nickname: "Roak51",
     //     id: "7",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 8658,
-    //             km: 11,
-    //             pts: 57,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 9853,
-    //             km: 32,
-    //             pts: 111,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -433,24 +272,20 @@ export default new Vuex.Store({
     //     nickname: "D1inho73",
     //     id: "8",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 7817,
-    //             km: 10,
-    //             pts: 41,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 9401,
-    //             km: 50,
-    //             pts: 82,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -474,24 +309,20 @@ export default new Vuex.Store({
     //     nickname: "Monik tamèr",
     //     id: "9",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 11499,
-    //             km: 6,
-    //             pts: 114,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 9698,
-    //             km: 21,
-    //             pts: 164,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -515,14 +346,10 @@ export default new Vuex.Store({
     //     nickname: "Turbo28266",
     //     id: "10",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -530,9 +357,9 @@ export default new Vuex.Store({
     //             pts: 0,
     //           },
     //           {
-    //             score: 11815,
-    //             km: 29,
-    //             pts: 192,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -556,24 +383,20 @@ export default new Vuex.Store({
     //     nickname: "La buche",
     //     id: "11",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 4258,
-    //             km: 3,
-    //             pts: 18,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 7564,
-    //             km: 30,
-    //             pts: 41,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -597,24 +420,20 @@ export default new Vuex.Store({
     //     nickname: "mimi",
     //     id: "12",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 8581,
+    //             score: 0,
     //             km: 0,
-    //             pts: 54,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 8817,
-    //             km: 21,
-    //             pts: 83,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -638,24 +457,20 @@ export default new Vuex.Store({
     //     nickname: "gege",
     //     id: "13",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 7211,
-    //             km: 2,
-    //             pts: 33,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 8567,
-    //             km: 11,
-    //             pts: 58,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -679,23 +494,19 @@ export default new Vuex.Store({
     //     nickname: "follasse65",
     //     id: "14",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
-    //             km: 1,
+    //             km: 0,
     //             pts: 0,
     //           },
     //           {
     //             score: 0,
-    //             km: 3,
+    //             km: 0,
     //             pts: 0,
     //           },
     //           {
@@ -720,24 +531,20 @@ export default new Vuex.Store({
     //     nickname: "LaBuche",
     //     id: "15",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 8809,
+    //             score: 0,
     //             km: 0,
-    //             pts: 61,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 11723,
-    //             km: 15,
-    //             pts: 186,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -761,24 +568,20 @@ export default new Vuex.Store({
     //     nickname: "ahmd_351",
     //     id: "16",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 9183,
+    //             score: 0,
     //             km: 0,
-    //             pts: 66,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 9446,
-    //             km: 60,
-    //             pts: 108,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -802,24 +605,20 @@ export default new Vuex.Store({
     //     nickname: "star20547",
     //     id: "17",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 9887,
+    //             score: 0,
     //             km: 0,
-    //             pts: 70,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 9362,
-    //             km: 74,
-    //             pts: 107,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -843,24 +642,20 @@ export default new Vuex.Store({
     //     nickname: "Noname 4k",
     //     id: "18",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 8455,
+    //             score: 0,
     //             km: 0,
-    //             pts: 50,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 7507,
-    //             km: 4,
-    //             pts: 71,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -884,24 +679,20 @@ export default new Vuex.Store({
     //     nickname: "Bryan",
     //     id: "19",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 8383,
+    //             score: 0,
     //             km: 0,
-    //             pts: 47,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 10979,
-    //             km: 32,
-    //             pts: 114,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -925,24 +716,20 @@ export default new Vuex.Store({
     //     nickname: "Nathan1210",
     //     id: "20",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 8063,
+    //             score: 0,
     //             km: 0,
-    //             pts: 44,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
     //             km: 0,
-    //             pts: 44,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -966,24 +753,20 @@ export default new Vuex.Store({
     //     nickname: "Clems***",
     //     id: "21",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 10435,
+    //             score: 0,
     //             km: 0,
-    //             pts: 75,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 9149,
-    //             km: 21,
-    //             pts: 105,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1007,24 +790,20 @@ export default new Vuex.Store({
     //     nickname: "Bonjour",
     //     id: "22",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 7434,
-    //             km: 1,
-    //             pts: 35,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 8379,
-    //             km: 32,
-    //             pts: 58,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1048,24 +827,20 @@ export default new Vuex.Store({
     //     nickname: "malki",
     //     id: "23",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 10685,
+    //             score: 0,
     //             km: 0,
-    //             pts: 81,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 14733,
-    //             km: 10,
-    //             pts: 303,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1089,24 +864,20 @@ export default new Vuex.Store({
     //     nickname: "Cylia",
     //     id: "24",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 6763,
-    //             km: 2,
-    //             pts: 31,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 9026,
-    //             km: 12,
-    //             pts: 80,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1130,24 +901,20 @@ export default new Vuex.Store({
     //     nickname: "lemouse1er",
     //     id: "25",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 6160,
+    //             score: 0,
     //             km: 0,
-    //             pts: 29,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 7305,
-    //             km: 21,
-    //             pts: 48,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1171,19 +938,15 @@ export default new Vuex.Store({
     //     nickname: "tounudario",
     //     id: "26",
     //     kicked: true,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 6044,
+    //             score: 0,
     //             km: 0,
-    //             pts: 27,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1212,24 +975,20 @@ export default new Vuex.Store({
     //     nickname: "FOX",
     //     id: "27",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 6012,
+    //             score: 0,
     //             km: 0,
-    //             pts: 25,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 6954,
-    //             km: 7,
-    //             pts: 43,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1253,24 +1012,20 @@ export default new Vuex.Store({
     //     nickname: "Ruben.otf",
     //     id: "28",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 5931,
+    //             score: 0,
     //             km: 0,
-    //             pts: 24,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 7083,
-    //             km: 44,
-    //             pts: 43,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1294,24 +1049,20 @@ export default new Vuex.Store({
     //     nickname: "Krakanazz",
     //     id: "29",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 5813,
-    //             km: 10,
-    //             pts: 22,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 6995,
-    //             km: 61,
-    //             pts: 41,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1335,24 +1086,20 @@ export default new Vuex.Store({
     //     nickname: "cda_38",
     //     id: "30",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 5734,
+    //             score: 0,
     //             km: 0,
-    //             pts: 21,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 4879,
-    //             km: 42,
-    //             pts: 33,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1376,24 +1123,20 @@ export default new Vuex.Store({
     //     nickname: "loups",
     //     id: "31",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 11327,
+    //             score: 0,
     //             km: 0,
-    //             pts: 107,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 11797,
-    //             km: 20,
-    //             pts: 200,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1417,24 +1160,20 @@ export default new Vuex.Store({
     //     nickname: "Dead poule",
     //     id: "32",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 12480,
+    //             score: 0,
     //             km: 0,
-    //             pts: 150,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 12380,
-    //             km: 11,
-    //             pts: 264,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1458,14 +1197,10 @@ export default new Vuex.Store({
     //     nickname: "jef",
     //     id: "33",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -1473,9 +1208,9 @@ export default new Vuex.Store({
     //             pts: 0,
     //           },
     //           {
-    //             score: 9321,
-    //             km: 26,
-    //             pts: 38,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1499,14 +1234,10 @@ export default new Vuex.Store({
     //     nickname: "hamimton",
     //     id: "34",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -1515,7 +1246,7 @@ export default new Vuex.Store({
     //           },
     //           {
     //             score: 0,
-    //             km: 3,
+    //             km: 0,
     //             pts: 0,
     //           },
     //           {
@@ -1540,14 +1271,10 @@ export default new Vuex.Store({
     //     nickname: "Zorklixx",
     //     id: "35",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -1556,7 +1283,7 @@ export default new Vuex.Store({
     //           },
     //           {
     //             score: 0,
-    //             km: 5,
+    //             km: 0,
     //             pts: 0,
     //           },
     //           {
@@ -1581,14 +1308,10 @@ export default new Vuex.Store({
     //     nickname: "Le S",
     //     id: "36",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -1622,14 +1345,10 @@ export default new Vuex.Store({
     //     nickname: "Cloclo45",
     //     id: "37",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -1637,9 +1356,9 @@ export default new Vuex.Store({
     //             pts: 0,
     //           },
     //           {
-    //             score: 5529,
-    //             km: 2,
-    //             pts: 13,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1663,23 +1382,19 @@ export default new Vuex.Store({
     //     nickname: "Turbo_Pedo",
     //     id: "38",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 11216,
+    //             score: 0,
     //             km: 0,
-    //             pts: 99,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
-    //             km: 4,
+    //             km: 0,
     //             pts: 0,
     //           },
     //           {
@@ -1704,14 +1419,10 @@ export default new Vuex.Store({
     //     nickname: "Tounuchef",
     //     id: "39",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -1745,14 +1456,10 @@ export default new Vuex.Store({
     //     nickname: "Minewoord",
     //     id: "40",
     //     kicked: true,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -1786,14 +1493,10 @@ export default new Vuex.Store({
     //     nickname: "mazikeen",
     //     id: "41",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -1827,14 +1530,10 @@ export default new Vuex.Store({
     //     nickname: "Trou2Ball",
     //     id: "42",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -1868,14 +1567,10 @@ export default new Vuex.Store({
     //     nickname: "Boss",
     //     id: "43",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -1909,24 +1604,20 @@ export default new Vuex.Store({
     //     nickname: "chris dh",
     //     id: "44",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
-    //             score: 12526,
+    //             score: 0,
     //             km: 0,
-    //             pts: 161,
+    //             pts: 0,
     //           },
     //           {
-    //             score: 14117,
-    //             km: 17,
-    //             pts: 311,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1950,14 +1641,10 @@ export default new Vuex.Store({
     //     nickname: "kentin",
     //     id: "45",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -1965,9 +1652,9 @@ export default new Vuex.Store({
     //             pts: 0,
     //           },
     //           {
-    //             score: 5936,
-    //             km: 13,
-    //             pts: 14,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -1991,14 +1678,10 @@ export default new Vuex.Store({
     //     nickname: "NK meruem",
     //     id: "46",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -2006,9 +1689,9 @@ export default new Vuex.Store({
     //             pts: 0,
     //           },
     //           {
-    //             score: 14075,
-    //             km: 4,
-    //             pts: 185,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -2032,14 +1715,10 @@ export default new Vuex.Store({
     //     nickname: "Nono",
     //     id: "47",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -2047,9 +1726,9 @@ export default new Vuex.Store({
     //             pts: 0,
     //           },
     //           {
-    //             score: 20978,
-    //             km: 128,
-    //             pts: 280,
+    //             score: 0,
+    //             km: 0,
+    //             pts: 0,
     //           },
     //           {
     //             score: 0,
@@ -2073,14 +1752,10 @@ export default new Vuex.Store({
     //     nickname: "Tiflop",
     //     id: "48",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
-    //         eventName: "Let's goooooooo!",
+    //         eventName: "Gas Gas Gas",
     //         eventParts : [
     //           {
     //             score: 0,
@@ -2089,7 +1764,7 @@ export default new Vuex.Store({
     //           },
     //           {
     //             score: 0,
-    //             km: 28,
+    //             km: 0,
     //             pts: 0,
     //           },
     //           {
@@ -2112,13 +1787,9 @@ export default new Vuex.Store({
     //   },
     //   {
     //     nickname: "vacheAmericaine",
-    //     id: "48",
+    //     id: "49",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
     //         eventName: "Gas Gas Gas",
@@ -2153,13 +1824,9 @@ export default new Vuex.Store({
     //   },
     //   {
     //     nickname: "TDX|Iron man",
-    //     id: "48",
+    //     id: "50",
     //     kicked: false,
-    //     grade: {
-    //       leader: false,
-    //       coleader: false,
-    //       member: true,
-    //     },
+    //     grade: 'member',
     //     stats: [
     //       {
     //         eventName: "Gas Gas Gas",
@@ -2195,9 +1862,9 @@ export default new Vuex.Store({
     // ],
     events: [
       // {
-      //   eventName: "Event 0",
-      //   start: "01/01/01",
-      //   end: "02/01/01",
+      //   eventName: "Gas Gas Gas",
+      //   start: "19/11/21",
+      //   end: "25/11/21",
       //   actualEvent: true,
       // }
     ],
@@ -2259,7 +1926,7 @@ export default new Vuex.Store({
     },
     getLeaders (state) {
       const actifPlayers = state.players.filter(player => player.kicked === false)
-      const leaders = actifPlayers.filter(player => player.grade.leader || player.grade.coleader)
+      const leaders = actifPlayers.filter(player => player.grade === 'leader' || player.grade === 'coleader')
       return leaders
     },
     getInactifPlayers (state) {
@@ -2277,6 +1944,9 @@ export default new Vuex.Store({
     },
     getEvents (state) {
       return state.events
+    },
+    getSelectedEvent (state) {
+      return state.eventSelected
     },
     getActualEvent (state) {
       let actualEvent = null

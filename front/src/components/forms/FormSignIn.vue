@@ -18,12 +18,15 @@
               <v-text-field
                 v-model="email"
                 label="E-mail"
+                type="email"
                 :rules="emailRules"
                 required
+                current
+                autocomplete="username"
               ></v-text-field>
               
               <!-- MDP  -->
-              <v-text-field label="Password" v-model="password" :rules="[v => !!v || 'Requis']"></v-text-field>
+              <v-text-field label="Password" v-model="password" type="password" autocomplete="current-password" :rules="[v => !!v || 'Requis']"></v-text-field>
               
               <v-btn
                 color="success"
@@ -57,12 +60,12 @@ export default {
   },
   data: () => ({
     valid: true,
-    email: 'johanne.assorin@hotmail.com3',
+    email: '',
     emailRules: [
       v => !!v || 'Requis',
       v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
     ],
-    password: '000000',    
+    password: '',    
     wrongPassword: false,
     wrongEmail: false,
     wrongPasswordMsg: 'Le mot de passe rentré est incorrecte',

@@ -59,7 +59,7 @@
     },
     computed: {
       actualEventSelected () {
-        return this.$store.state.eventSelected
+        return this.$store.getters.getSelectedEvent
       },
       playersUpdated () {
         return this.$store.state.playersUpdated
@@ -125,7 +125,7 @@
 <style lang="scss" scoped>
 .best-runners_container {
   min-height: 250px;
-  max-height: 250px;
+  // max-height: 250px;
   padding: 0px 20px;
   box-shadow: 0 2px 3px #e5e5e5;
   overflow: auto;

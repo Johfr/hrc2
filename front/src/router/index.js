@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import TeamPage from '../views/TeamPage.vue'
+import Dashboard from '../views/Dashboard.vue'
 
 Vue.use(VueRouter)
 
@@ -21,27 +23,20 @@ const routes = [
   {
     path: '/teamPage/:teamId',
     name: 'TeamPage',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "teamPage" */ '../views/TeamPage.vue'),
+    component: TeamPage, // () => import(/* webpackChunkName: "teamPage" */ '../views/TeamPage.vue'),
     beforeEnter: (to, from, next) => {
       const userId = localStorage.getItem('uuid')
       if (userId != 'null') {
         next()
-        // next({path: to.fullPath})
       } else {
         next('/')
       }
     }
   },
   {
-    path: '/Dashboard/:uuid',
-    name: 'dashboard',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue')
+    path: '/dashboard/:uuid',
+    name: 'Dashboard',
+    component: Dashboard, // () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue'),
   }
 ]
 

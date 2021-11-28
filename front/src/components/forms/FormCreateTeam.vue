@@ -149,10 +149,11 @@
             if (querySnapshot.docs.length === 0) {
               docRef = await addDoc(collection(dbFirestore, "teams"), ...teamValues)
             } else {
-              querySnapshot.forEach((doc) => {
-                this.teamExist = true
-                console.log(doc.id, " => ", doc.data())
-              })
+              this.teamExist = true
+              // querySnapshot.forEach((doc) => {
+              //   this.teamExist = true
+              //   console.log(doc.id, " => ", doc.data())
+              // })
             }
             
             

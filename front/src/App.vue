@@ -7,10 +7,10 @@
     >
       <router-link to="/" class="d-flex align-center">
           <v-img
-            alt="Vuetify Logo"
+            alt="Hill climb Racing 2 logo"
             class="shrink mr-2"
             contain
-            src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+            src="./assets/Hill_Climber.png"
             transition="scale-transition"
             width="40"
           />

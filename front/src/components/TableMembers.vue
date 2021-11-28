@@ -4,14 +4,23 @@
     <div>
       <!-- {{ allPlayers[1].stats[allPlayers[1].stats.length - 1].eventName }} -->
     <v-data-table
+      v-if="user.role != undefined"
       :headers="headers"
       :items="players"
       :item-class= "row_classes"
+      :items-per-page="50"
       sort-by="calories"
       class="elevation-1"
+      :search="search"
+      :custom-filter="filterOnlyCapsText"
     >
       <!-- Dialogs  -->
       <template v-slot:top>
+        <v-text-field
+          v-model="search"
+          label="Search (En minuscule uniquement)"
+          class="mx-4"
+        ></v-text-field>
         <v-toolbar
           flat
         >
@@ -36,7 +45,6 @@
           <v-dialog
             v-model="dialog"
             max-width="500px"
-            v-if="uuid && user.role === 'leader'"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -46,6 +54,7 @@
                 v-bind="attrs"
                 v-on="on"
                 @click="generateId"
+                v-if="uuid && user.role === 'leader'"
               >
                 Joueur
                 <v-icon small>
@@ -68,7 +77,6 @@
                     <v-col cols="6">
                       <v-text-field v-model="editedItem.id" label="Id" disabled />
                     </v-col>
-                    {{ editedItem }}
                     <v-col cols="12">
                       <v-select 
                         :items="gradeItems"
@@ -78,43 +86,43 @@
                       />
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.score1" label="score1" :value="'12336'" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.score1" label="score1" :value="'12336'" />
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.score2" label="score2" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.score2" label="score2" />
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.score3" label="score3" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.score3" label="score3" />
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.score4" label="score4" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.score4" label="score4" />
                     </v-col>
                     <!-- <v-col cols="4">
                       <v-text-field v-mo type="number"del="editedItem.moyenne" label="Moyenne" />
                     </v-col> -->
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.km1" label="km1" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.km1" label="km1" />
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.km2" label="km2" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.km2" label="km2" />
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.km3" label="km3" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.km3" label="km3" />
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.km4" label="km4" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.km4" label="km4" />
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.pts1" label="pts1" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.pts1" label="pts1" />
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.pts2" label="pts2" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.pts2" label="pts2" />
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.pts3" label="pts3" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.pts3" label="pts3" />
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field type="number" v-model="editedItem.pts4" label="pts4" />
+                      <v-text-field type="number" @keyup.enter='save' v-model="editedItem.pts4" label="pts4" />
                     </v-col>
                   </v-row>
                 </v-container>
@@ -172,7 +180,6 @@
       
       <template v-slot:item.nickname="{ item, index }">
         #{{ index + 1 }}
-        {{ item.grade }}
         <v-icon v-if="item.grade === 'leader'" small color="primary" class="mb-1">mdi-account-tie</v-icon>
         <v-icon v-if="item.grade === 'coleader'" small color="secondary" class="mb-1">mdi-account-supervisor</v-icon>
         <!-- <v-icon v-if="item.member" small>mdi-account-group</v-icon> -->
@@ -183,13 +190,13 @@
       
       <template v-slot:item.score1="{ item }">
         <div class="column-item-container">
-          <span class="score">
+          <span :class="['score', {'zero' : item.score1 === 0}]">
             {{ item.score1 }}
             <v-icon small color="#e52c2c" v-if="item.score1 > 30000">
               mdi-star
             </v-icon>
           </span>
-          <span class="km">
+          <span :class="['km', {'zero' : item.km1 === 0}]">
             {{ item.km1 }} Km
           </span>
           <span class="pts">
@@ -200,13 +207,13 @@
       
       <template v-slot:item.score2="{ item }">
         <div class="column-item-container">
-          <span class="score">
+          <span :class="['score', {'zero' : item.score2 === 0}]">
             {{ item.score2 }}
             <v-icon small color="#e52c2c" v-if="item.score2 > 30000">
               mdi-star
             </v-icon>
           </span>
-          <span class="km">
+          <span :class="['km', {'zero' : item.km2 === 0}]">
             {{ item.km2 }} Km
           </span>
           <span class="pts">
@@ -217,13 +224,13 @@
       
       <template v-slot:item.score3="{ item }">
         <div class="column-item-container">
-          <span class="score">
+          <span :class="['score', {'zero' : item.score3 === 0}]">
             {{ item.score3 }}
             <v-icon small color="#e52c2c" v-if="item.score3 > 30000">
               mdi-star
             </v-icon>
           </span>
-          <span class="km">
+          <span :class="['km', {'zero' : item.km3 === 0}]">
             {{ item.km3 }} Km
           </span>
           <span class="pts">
@@ -234,13 +241,13 @@
       
       <template v-slot:item.score4="{ item }">
         <div class="column-item-container">
-          <span class="score">
+          <span :class="['score', {'zero' : item.score4 === 0}]">
             {{ item.score4 }}
             <v-icon small color="#e52c2c" v-if="item.score4 > 30000">
               mdi-star
             </v-icon>
           </span>
-          <span class="km">
+          <span :class="['km', {'zero' : item.km4 === 0}]">
             {{ item.km4 }} Km
           </span>
           <span class="pts">
@@ -285,8 +292,9 @@
         >
           mdi-pencil
         </v-icon>
+          <!-- v-if="!item.kicked && uuid && user.role === 'leader'" -->
         <v-icon
-          v-if="!item.kicked"
+          v-if="!item.kicked && isActualEvent"
           small
           @click="deleteItem(item)"
         >
@@ -319,6 +327,7 @@
       dialog: false,
       dialogDelete: false,
       reset: "Recharger",
+      search: '',
       headers: [
         { text: 'Joueurs', align: 'center', value: 'nickname'},
         { text: 'Score1', align: 'center', value: 'score1' },
@@ -331,6 +340,7 @@
       ],
       allPlayers: null, // datas API provenant du store
       players: [], // Liste des joueurs à afficher dans le tableau
+      isActualEvent: true,
       scores: [],
       moyenne: '',
       bestRecord: '',
@@ -391,8 +401,8 @@
         return this.actualEventSelected || this.actualEvent
       },
       actualEventSelected () {
-        // console.log('watch store event selected', this.$store.state.eventSelected)
-        return this.$store.state.eventSelected
+        // console.log('watch store event selected', this.$store.getters.getSelectedEvent)
+        return this.$store.getters.getSelectedEvent
       },
       playersDatas () {
         return this.actualEvent.date
@@ -422,7 +432,10 @@
         
         this.allEvents.map((event) => {
           if (event.eventName === this.actualEventSelected.name) {
-
+            // console.log('actualEventSelected', this.actualEventSelected)
+            // console.log('event', event)
+            // console.log('compar', this.actualEventSelected != null && this.actualEventSelected.name === event.eventName)
+            this.isActualEvent = true // on autorise le kick uniquement sur les events actifs
             this.allPlayers.map((player) => {
               player.stats.map((stat, i) => {
                 if (event.eventName === stat.eventName) {
@@ -456,6 +469,8 @@
                 }
               })
             })
+          } else { // on masque la possibilité de kick
+            this.isActualEvent = false
           }
           
         })
@@ -466,31 +481,35 @@
         this.calculBestScore('pts1', 'pts2', 'pts3', 'pts4', 'bestPts')
         this.calculMoyenne()
       },
-      // getStorePlayers () {
-      //   this.allPlayers = this.getStorePlayers
-      // }
+      user () {
+        return this.user
+      }
     },
     created () {
-      this.allPlayers = this.$store.getters.getPlayers //this.getStorePlayers
-      
+      // this.allPlayers = this.$store.getters.getPlayers //this.getStorePlayers
+      // console.log('creé', this.$store.getters.getUser.role)
       // console.log(this.allPlayers)
+      // this.generateId() //
       this.initialize() // initie l'index de l'event
     },
     // mounted () {
-    //   console.log("mont", this.$store.getters.getActifPlayers)
+    //   this.$nextTick(() => {
+    //     console.log("mont", this.$store.getters.getUser.role)
+    //   })
     // },
     methods: {
       initialize () {
         // this.pullDatas()
         // .then(() => {
-          this.allPlayers = this.$store.getters.getPlayers 
+          this.allPlayers = this.$store.getters.getPlayers
           this.allEvents = this.$store.getters.getEvents
           this.calculPlayersDatasByEvent()
+          // console.log(this.players)
         // })
       },
       calculPlayersDatasByEvent () {
         this.allEvents.map((event) => {
-          if (event.actualEvent) {            
+          if (event.actualEvent) {
             this.allPlayers.map((player) => {
               player.stats.map((stat, i) => {
                 if (event.eventName === stat.eventName) {
@@ -561,8 +580,9 @@
           data[item] = scores[scores.length - 1]
         })
       },
-      generateId () {
-        this.editedItem.id = 'HCFR-' + (this.players.length + 1)
+      generateId () { // récupère tous les joueurs avant filtrage par event
+        const allPlayers = this.$store.getters.getPlayers
+        this.editedItem.id = (allPlayers.length + 1) // 'HCR-' + (this.players.length + 1)
       },
       editItem (item) {
         this.editedIndex = this.players.indexOf(item)
@@ -607,7 +627,7 @@
           //   coleader: this.grade === "coleader",
           //   member: this.grade === "member",
           // }
-          console.log(this.editedItem)
+          // console.log(this.editedItem)
           Object.assign(this.players[this.editedIndex], this.editedItem)
         } else { // ajout d'un nouveau joueur
           // this.editedItem.grade = this.grade
@@ -616,7 +636,7 @@
           //   coleader: this.grade === "coleader",
           //   member: this.grade === "member",
           // }
-          console.log(this.editedItem)
+          // console.log(this.editedItem)
           this.players.push(this.editedItem)
         }
         // on stocke dans le store
@@ -632,6 +652,13 @@
         this.calculBestScore('km1', 'km2', 'km3', 'km4', 'bestKm')
         this.calculBestScore('pts1', 'pts2', 'pts3', 'pts4', 'bestPts')
         this.close()
+      },
+      filterOnlyCapsText (value, search) {
+        // console.log(item)
+        return value != null &&
+          search != null &&
+          typeof value === 'string' &&
+          value.toString().toLocaleLowerCase().indexOf(search) !== -1
       },
       row_classes(item) {
         if (item.kicked) {
@@ -649,11 +676,20 @@
     padding: 5px 0;
 
     .score {
+      white-space: nowrap;
       font-size: 18px;
       font-weight: 700;
+
+      &.zero {
+        color: red;
+      }
     }
     .km {
       opacity: 0.8;
+
+      &.zero {
+        color: red;
+      }
     }
     .pts {
       opacity: 0.6;

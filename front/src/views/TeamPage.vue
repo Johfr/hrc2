@@ -1,5 +1,28 @@
 <template>
 <v-container>
+  <!-- Info -->
+  <v-row>
+    <v-btn @click="showInfo = !showInfo">Info</v-btn>
+    <div v-show="showInfo" class="col-12" v-if="user.role === 'leader'">
+      <p class="mb-0">Bienvenue sur la page de gestion de l'équipe</p>
+      <ol class="info-list">
+        <li class="mb-0">Avant toute chose il te faut créer un event en cliquant sur "nouvel event"</li>
+        <li class="mb-0">Rentre le nom de l'event en cours ainsi que la durée total de l'event. Si l'event dure 7 jours rentre les 7 jours</li>
+        <li class="mb-0">Une fois créé tu pourras rajouter les joueurs en spécifiant leur pseudo, leur grade et leurs stats</li>
+        <li class="mb-0 warning">L'étape la plus cruciale : Pense bien à sauvegarder après toutes modifications sinon tes saisies seront perdues :/</li>
+        <li class="mb-0">Une fois l'event en cours terminé tu pourras en créer un nouveau. Note qu'en créant un event celui-ci est automatiquement défini comme l'event en cours.</li>
+        <li class="mb-0">A la création d'un nouvel event tous les joueurs actifs de ton équipe (non kickés) seront automatiquement affichés !"</li>
+        <li class="mb-0 warning">2 fois vaut mieux qu'une, pense bien à sauvegarder tes modifications ;)</li>
+        <li class="mb-0">Tu peux réduire les infos en cliquant sur le bouton 'INFO' juste au-dessus !</li>
+      </ol>
+    </div>
+  </v-row>
+
+  <!-- Nom de l'équipe  -->
+  <v-row>
+    <h2 class="col-6">HillClimbersFr</h2>
+  </v-row>
+
   <!-- Gestion de l'équipe -->
   <v-row>
     <v-col sm="6">
@@ -9,16 +32,6 @@
       <v-spacer></v-spacer>
       <SaveBtns />
     </v-col>
-  </v-row>
-
-  <!-- Statistique des membres  -->
-  <v-row>
-    <h1 class="col-6">Statistique des membres</h1>
-  </v-row>
-
-  <!-- Nom de l'équipe  -->
-  <v-row>
-    <h2 class="col-6">HillClimbersFr</h2>
   </v-row>
   
   <!-- selecteur d'events  -->
@@ -39,11 +52,16 @@
     </v-col>
   </v-row>
 
+  <!-- Statistique des membres  -->
+  <v-row>
+    <h1 class="col-6">Statistiques des membres</h1>
+  </v-row>
+
   <v-row v-if="dataPulledSuccefuly">
     <!-- Meilleurs scores : filtre tous les scores d'1 joueurs,
     retourne le meilleur puis compare avec tous les autres joueurs et
     retourne le meilleur score + nom du joueur -->
-    <v-col cols="12" sm="6" lg="2">
+    <v-col cols="12" sm="6" lg="3">
       <TableBestParticipation :recordName="'pts'" :recordTitle="'Les plus actifs'" />
       <TableBestRecords :recordKey="'km'" :recordName="'Km'" :recordTitle="'Meilleurs rouleurs'" />
     </v-col>
@@ -68,13 +86,14 @@ import SaveBtns from '../components/SaveBtns.vue'
 import TableMembers from '../components/TableMembers.vue'
 import TableBestParticipation from '../components/Tables/TableBestParticipation.vue'
 import TableBestRecords from '../components/Tables/TableBestRecords.vue'
-  import firebaseInit from '../components/Firebase/FirebaseInit.js'
-  import { getFirestore, doc, getDoc } from "firebase/firestore"
+import firebaseInit from '../components/Firebase/FirebaseInit.js'
+import { getFirestore, doc, getDoc } from "firebase/firestore"
 
   export default {
-    name: 'Home',
+    name: 'TeamPage',
     data () {
       return {
+        showInfo: true,
         actualEvent: {},
         actualEventIndex: null,
         allEvents: null, // datas API provenant du store
@@ -90,6 +109,9 @@ import TableBestRecords from '../components/Tables/TableBestRecords.vue'
       // },
       actualEventFn () {
         return this.actualEvent
+      },
+      user () {
+        return this.$store.getters.getUser
       }
     },
     components: {
@@ -112,6 +134,7 @@ import TableBestRecords from '../components/Tables/TableBestRecords.vue'
           }
         })
         this.$store.commit('updateEventSelected', actualEvent)
+        // console.log(actualEvent)
       },
     },
     created () {
@@ -150,13 +173,13 @@ import TableBestRecords from '../components/Tables/TableBestRecords.vue'
             if (docSnap.data().players != undefined) {
               const playersStored = docSnap.data().players
               this.$store.dispatch('setPlayers', playersStored)
-              // console.log('playersStored', docSnap)
+              // console.log('playersStored', playersStored)
               
               this.dataPullSuccess = true
               setTimeout(() => {
                 this.dataPullSuccess = false
                 this.dataPullConfirm = false
-                console.log('data pullé')
+                // console.log('data pullé')
               }, 4000)
             }
             if (docSnap.data().events != undefined) {

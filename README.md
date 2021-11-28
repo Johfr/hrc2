@@ -1,7 +1,7 @@
 # hrc2
 A team statistics app for the HRC2 mobile game
 
-# hrc2_app
+# hrc2_team_statistics_app
 
 ## Project setup
 ```

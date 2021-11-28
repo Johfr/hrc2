@@ -1,13 +1,17 @@
+import firebaseInit from './FirebaseInit.js'
 import { getDatabase, ref, onValue} from "firebase/database";
 
-const getUserDatas = function (uuid) {
-  const db = getDatabase()
-  const userInfos = ref(db, 'users/' + uuid )
+export default {
+  user: function (uuid) {
+    const db = getDatabase(firebaseInit)
+    const userInfos = ref(db, 'users/' + uuid )
+    let data = null
 
-  onValue(userInfos, (snapshot) => {
-    const data = snapshot.val();
+    onValue(userInfos, (snapshot) => {
+      data = snapshot.val();
+    })
     return data
-  })
+  }
 }
 
-export default getUserDatas()
+// export default getUserDatas

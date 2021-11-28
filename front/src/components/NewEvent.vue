@@ -18,11 +18,11 @@
 
         <template v-if="showPicker">
           <v-card>
-            <v-toolbar color="primary" dark >Créer un nouvel event</v-toolbar>            
+            <v-toolbar color="primary" dark >Créer un nouvel event</v-toolbar>
             <!-- Champs input de la modal  -->
             <v-card-text>
               <v-container>
-                <v-row>
+                <v-row>      
                   <!-- Msg d'alert -->
                   <v-col cols="12">
                     <p class="warning" v-if="showDateError">{{ showDateErrorMsg }}</p>

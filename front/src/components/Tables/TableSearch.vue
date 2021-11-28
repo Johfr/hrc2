@@ -16,7 +16,7 @@
           <!-- SEARCH  -->
           <v-text-field
             v-model="search"
-            label="Rechercher (En caractère majuscule uniquement)"
+            label="Rechercher (En caractère minuscule uniquement)"
             class="mt-4"
           ></v-text-field>
           
@@ -110,6 +110,7 @@
           elevation="2"
           small
           @click="joinTeam(item)"
+          v-if="item.teamId !== user.teamId"
         >
           Rejoindre
         </v-btn>
@@ -274,7 +275,7 @@
         return value != null &&
           search != null &&
           typeof value === 'string' &&
-          value.toString().toLocaleUpperCase().indexOf(search) !== -1
+          value.toString().toLocaleLowerCase().indexOf(search) !== -1
       },
 
       joinTeam (item) {

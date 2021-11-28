@@ -6,9 +6,8 @@
 
 <script>
 import UserDashboard from '../components/User/UserDashboard.vue'
-
   export default {
-    name: 'Home',
+    name: 'Dashboard',
     data () {
       return {}
     },

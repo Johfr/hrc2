@@ -10,8 +10,8 @@
         </span>
         <span class="item_value item_text">
           {{ participation.nbreParticipation }}
-          <span class="item_fff item_text">
-            {{ participation.nbreParticipation > 1 ? "participations" : "participation"}}
+          <span class="item_fff item_text" :title='participation.nbreParticipation > 1 ? participation.nbreParticipation + "participations" : participation.nbreParticipation + "participation"'>
+            {{ participation.nbreParticipation > 1 ? "parts.." : "part.."}}
           </span>
         </span>
       </li>
@@ -60,7 +60,7 @@
     },
     computed: {
       actualEventSelected () {
-        return this.$store.state.eventSelected
+        return this.$store.getters.getSelectedEvent
       },
       playersUpdated () {
         return this.$store.state.playersUpdated
@@ -109,6 +109,9 @@
               if (playerScore[2] != 0) {
                 participation += 1
               }
+              if (playerScore[3] != 0) {
+                participation += 1
+              }
               nbreParticipation.push({playerName: player.nickname, nbreParticipation : participation})
 
             }
@@ -127,7 +130,7 @@
 <style lang="scss" scoped>
 .best-runners_container {
   min-height: 250px;
-  max-height: 250px;
+  // max-height: 250px;
   padding: 0px 20px;
   box-shadow: 0 2px 3px #e5e5e5;
   overflow: auto;

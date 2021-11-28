@@ -53,12 +53,12 @@
           const events = this.$store.getters.getEvents
           const actifPlayers = this.$store.getters.getActifPlayers.length
           const leaders = this.$store.getters.getLeaders.length
-          
+
           const db = getFirestore(firebaseInit)
           const teamRef = doc(db, "teams", this.teamId)
 
-          console.log(this.$store.getters.getPlayers)
-          console.log(events)
+          // console.log(this.$store.getters.getPlayers)
+          // console.log(events)
           await updateDoc(teamRef, {
             players: this.players,
             events: events,
@@ -98,7 +98,7 @@
               setTimeout(() => {
                 this.dataPullSuccess = false
                 this.dataPullConfirm = false
-                console.log('data pullé')
+                // console.log('data pullé')
                 // console.log(doc.nickname)
               }, 4000)
             // })
@@ -112,7 +112,7 @@
           this.alertFailed = true
           this.dataPullConfirm = false
           this.dataPullSuccess = false
-          console.log('this.alertFailed', this.alertFailed)
+          // console.log('this.alertFailed', this.alertFailed)
         }
       }
     }

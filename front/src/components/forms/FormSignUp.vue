@@ -13,6 +13,7 @@
             </p> -->
             <p class="warning" v-show="accountAlreadyExist">{{accountAlreadyExistMsg}}</p>
             <p class="warning" v-show="invalidEmail">{{invalidEmailMsg}}</p>
+            <p class="warning" v-show="weakPw">{{weakPwMsg}}</p>
             <v-form
               ref="form"
               v-model="valid"
@@ -22,15 +23,22 @@
               <!-- <v-text-field v-model="teamname" label="Nom de ta team" :rules="[v => !!v || 'Requis']"></v-text-field> -->
               
               <!-- Pseudo  -->
-              <v-text-field v-model="nickname" label="Pseudo In Game" :rules="[v => !!v || 'Requis']"></v-text-field>
+              <v-text-field v-model="nickname" label="Pseudo In Game" type="name" autocomplete="nickname" :rules="[v => !!v || 'Requis']"></v-text-field>
 
               <!-- EMAIL  -->
-              <v-text-field
+              <!-- <v-text-field
                 v-model="email"
                 label="E-mail"
                 :rules="emailRules"
                 required
-              ></v-text-field>
+              /> -->
+              
+              <v-text-field
+                label="Email"
+                v-model="email"
+                :suffix="emailSuffixe"
+                required
+              />
               
               <!-- Role -->
               <v-select
@@ -43,7 +51,7 @@
               </v-select>
 
               <!-- MDP  -->
-              <v-text-field label="Password" v-model="password" :rules="[v => !!v || 'Requis']"></v-text-field>
+              <v-text-field label="Password" v-model="password" autocomplete="current-password" :rules="[v => !!v || 'Requis']"></v-text-field>
               
               <!-- Confirm MDP  -->
               <v-text-field label="Password confirm" v-model="confirm" @input="checkPassword" :rules="[v => !!v || 'Requis'] || passwordConfirmRules"></v-text-field>
@@ -79,7 +87,8 @@ import { getDatabase, ref, set  } from "firebase/database";
     },
     data: () => ({
       valid: true,
-      email: null,
+      emailSuffixe: '@hcr2.com',
+      email: '',
       nickname: '',
       role: null,
       roleItems: ['leader', 'coleader', 'membre'],
@@ -96,6 +105,8 @@ import { getDatabase, ref, set  } from "firebase/database";
       accountAlreadyExistMsg: 'Le compte existe déjà',
       invalidEmail: false,
       invalidEmailMsg: 'Format d\'email invalide',
+      weakPw: false,
+      weakPwMsg: 'Le mot de passe doit contenir au moins 6 caractères',
     }),
     created () {
       firebaseInit
@@ -103,8 +114,9 @@ import { getDatabase, ref, set  } from "firebase/database";
     methods: {
       validateCode () {
         if (this.confirm === this.password && this.$refs.form.validate()) {
+          const userMail = this.email + this.emailSuffixe
           const auth = getAuth();
-          createUserWithEmailAndPassword(auth, this.email, this.password)
+          createUserWithEmailAndPassword(auth, userMail, this.password)
             .then((userCredential) => {
               // console.log(userCredential.user)
               // Utilisateur créé
@@ -112,7 +124,7 @@ import { getDatabase, ref, set  } from "firebase/database";
               return uuid
             })
             .then((uuid) => {
-              console.log('uid', uuid)
+              // console.log('uid', uuid)
               // on enregistre les infos dans le realtime database
               function writeUserData(userId, nickname, role, email) {
                 const db = getDatabase(firebaseInit)
@@ -123,9 +135,9 @@ import { getDatabase, ref, set  } from "firebase/database";
                 });
               }
               
-              writeUserData(uuid, this.nickname, this.role, this.email)
+              writeUserData(uuid, this.nickname, this.role, userMail)
 
-              this.$store.dispatch('setUser', {nickname: this.nickname, role: this.role, email: this.email})
+              this.$store.dispatch('setUser', {nickname: this.nickname, role: this.role, email: userMail})
 
               this.$emit('close')
               this.$refs.form.reset()
@@ -144,6 +156,9 @@ import { getDatabase, ref, set  } from "firebase/database";
               }
               if (errorCode === 'auth/invalid-email') {
                 this.invalidEmail = true
+              }
+              if (errorCode === 'auth/weak-password') {
+                this.weakPw = true
               }
             });
         }

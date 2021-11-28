@@ -7,9 +7,7 @@
     <p class="warning" v-if="wrongCode">
       {{ wrongCodeMsg }}
     </p>
-    {{ user }}
-    {{ teamDatas.teamId }}
-    {{ teamDatas.teamCode }}
+    
     <v-text-field label="Code d'entrée" v-model="code" :rules="[v => !!v || 'Requis']"></v-text-field>
     <v-btn
       color="success"
@@ -72,7 +70,7 @@
             let userNewValue = null
             onValue(userDb, (snapshot) => {
               const data = snapshot.val()
-              console.log(data)
+              // console.log(data)
               userNewValue = data
             })
             // on close + push en store
