@@ -31,6 +31,7 @@
             vertical
           ></v-divider>
 
+          <!-- event Title  -->
           <v-toolbar-title>
             <span class="title_event-name">
               <h2 class="title-h2">{{ actualEventSelected ? actualEventSelected.name : $store.getters.getActualEvent.eventName }}</h2>
@@ -45,6 +46,7 @@
           <v-dialog
             v-model="dialog"
             max-width="500px"
+            v-if="isActualEvent"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -171,7 +173,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm({name: editedItem.nickname, id: editedItem.id})">OK</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm({name: editedItem.nickname, id: editedItem.id, kickedThe: Date.now()})">OK</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -180,11 +182,12 @@
       
       <template v-slot:item.nickname="{ item, index }">
         #{{ index + 1 }}
-        <v-icon v-if="item.grade === 'leader'" small color="primary" class="mb-1">mdi-account-tie</v-icon>
-        <v-icon v-if="item.grade === 'coleader'" small color="secondary" class="mb-1">mdi-account-supervisor</v-icon>
+        <v-icon v-if="item.grade === 'leader'" small color="secondary" class="mb-1">mdi-account-tie</v-icon>
+        <v-icon v-if="item.grade === 'coleader'" small color="green" class="mb-1">mdi-account-supervisor</v-icon>
         <!-- <v-icon v-if="item.member" small>mdi-account-group</v-icon> -->
         <span class="nickname-title">
           {{ item.nickname }}
+          <!-- {{ getStorePlayers.filter(player => player.id === "1")[0].nickname + ':' + getStorePlayers.filter(player => player.id === "1")[0].kicked }} -->
         </span>
       </template>
       
@@ -330,10 +333,10 @@
       search: '',
       headers: [
         { text: 'Joueurs', align: 'center', value: 'nickname'},
-        { text: 'Score1', align: 'center', value: 'score1' },
-        { text: 'Score2', align: 'center', value: 'score2' },
-        { text: 'Score3', align: 'center', value: 'score3' },
-        { text: 'Score4', align: 'center', value: 'score4' },
+        { text: 'Duel1', align: 'center', value: 'score1', class: 'no-wrap' },
+        { text: 'Duel2', align: 'center', value: 'score2', class: 'no-wrap' },
+        { text: 'Duel3', align: 'center', value: 'score3', class: 'no-wrap' },
+        { text: 'Duel4', align: 'center', value: 'score4', class: 'no-wrap' },
         { text: 'Meilleur Record', align: 'center', value: 'bestRecord', class: 'best-record-header' },
         { text: 'Moyenne', align: 'center', value: 'moyenne', sortable: false  },
         { text: 'Actions', value: 'actions', sortable: false },
@@ -413,9 +416,9 @@
       user () {
        return this.$store.getters.getUser
       },
-      // getStorePlayers () {
-      //   return this.$store.state.players
-      // }
+      getStorePlayers () {
+        return this.$store.getters.getPlayers
+      }
     },
     // mounted () {
     //   console.log(this.players)
@@ -483,6 +486,12 @@
       },
       user () {
         return this.user
+      },
+      getStorePlayers () {
+        // console.log('modifié')
+        this.players = []
+        // console.log(this.getStorePlayers.map(player => player.nickname === 'Joh' ? player : ''))
+        this.initialize()
       }
     },
     created () {
@@ -501,7 +510,7 @@
       initialize () {
         // this.pullDatas()
         // .then(() => {
-          this.allPlayers = this.$store.getters.getPlayers
+          this.allPlayers = this.getStorePlayers // this.$store.getters.getPlayers
           this.allEvents = this.$store.getters.getEvents
           this.calculPlayersDatasByEvent()
           // console.log(this.players)
@@ -597,6 +606,7 @@
       },
       deleteItemConfirm (item) {
         // this.players.splice(this.editedIndex, 1)
+        console.log(item)
         this.$store.dispatch('kickPlayer', item)
           .then(() => {
             this.players = []
@@ -621,23 +631,13 @@
       },
       save () {
         if (this.editedIndex > -1) { // Modif dun joueur existant
-          // this.editedItem.grade = this.grade
-          // {
-          //   leader: this.grade === "leader",
-          //   coleader: this.grade === "coleader",
-          //   member: this.grade === "member",
-          // }
           // console.log(this.editedItem)
           Object.assign(this.players[this.editedIndex], this.editedItem)
         } else { // ajout d'un nouveau joueur
-          // this.editedItem.grade = this.grade
-          // {
-          //   leader: this.grade === "leader",
-          //   coleader: this.grade === "coleader",
-          //   member: this.grade === "member",
-          // }
-          // console.log(this.editedItem)
+          // On note la date ou le joueur à rejoint l'équipe
+          this.editedItem.joinThe = Date.now()
           this.players.push(this.editedItem)
+          console.log(this.editedItem)
         }
         // on stocke dans le store
         if (this.actualEventSelected !== null) { // via le selecteur d'event
@@ -742,6 +742,9 @@
       &:hover {
         background-color: #e52c2c !important;
       }
+    }
+    .no-wrap {
+      white-space: nowrap;
     }
   }
 </style>

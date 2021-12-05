@@ -53,7 +53,7 @@
 </template>
 
 <script>
-  import DatePicker from './DatePicker.vue'
+  import DatePicker from '../DatePicker.vue'
   // import firebaseInit from './Firebase/FirebaseInit.js'
   // import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore"
   export default {

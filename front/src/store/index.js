@@ -1918,6 +1918,15 @@ export default new Vuex.Store({
       return state.user
     },
     getPlayers (state) {
+      // state.players.map(player => {
+      //   if (player.kickedThe) {
+      //     const kickedThe = new Date(player.kickedThe)
+      //     const kickedTheString = kickedThe.toDateString()
+      //     const kickedTheSplitted = kickedTheString.split(' ')
+      //     const kickedTheFormatted = kickedTheSplitted[0] + ' ' + kickedTheSplitted[2] + ' ' + kickedTheSplitted[1] + ' ' + kickedTheSplitted[3]
+      //     console.log(kickedTheFormatted)
+      //   }
+      // })
       return state.players
     },
     getActifPlayers (state) {
@@ -1989,11 +1998,9 @@ export default new Vuex.Store({
       state.user = payload
     },
     setPlayers(state, payload) { // push dans players
-      // console.log('store', payload)
       state.players = payload
     },
     setEvents(state, payload) { // push dans players
-      // console.log('store', payload)
       state.events = payload
     },
     updateEventSelected (state, payload) {
@@ -2039,11 +2046,7 @@ export default new Vuex.Store({
             id: payload.id,
             kicked: payload.kicked,
             grade: payload.grade,
-            // {
-            //   leader: payload.grade.leader,
-            //   coleader: payload.grade.coleader,
-            //   member: payload.grade.member,
-            // },
+            joinThe: payload.joinThe,
             stats: [
               {
                 eventName: payload.eventName,
@@ -2078,12 +2081,57 @@ export default new Vuex.Store({
           }
         )
       }
-      
+    },
+    updatePlayersStatus (state, payload) { //mets à jour les status kicked
+      // on récupère l'event en cours
+      const eventEnCours = state.events[state.events.length - 1]
+      payload.map(player => {
+        // on récupère le dernier event auquel le joueur à joué
+        const lastEventPlayed = player.stats[player.stats.length - 1]
+        if (!player.kicked && lastEventPlayed.eventName != eventEnCours.eventName) {
+          player.stats.push({
+            eventName: eventEnCours.eventName,
+            eventParts : [
+              {
+                score: 0,
+                km: 0,
+                pts: 0,
+              },
+              {
+                score: 0,
+                km: 0,
+                pts: 0,
+              },
+              {
+                score: 0,
+                km: 0,
+                pts: 0,
+              },
+              {
+                score: 0,
+                km: 0,
+                pts: 0,
+              }
+            ],
+            moyenne: 0,
+            bestRecord: 0,
+            bestKm: 0,
+            bestPts: 0,
+          })
+        }
+      })
+      state.players = payload
+      console.log(state.players)
     },
     kickPlayer (state, payload) {
-      state.players.filter(player => payload.id === player.id ? player.kicked = true : '')
+      state.players.filter(player => {
+        if (payload.id === player.id) {
+          player.kicked = true 
+          player.kickedThe = payload.kickedThe
+        }
+      })
       // console.log(payload)
-      // console.log(state.players)
+      console.log(state.players)
     },
     createNewEvent (state, payload) {
       state.events.map(event => {
@@ -2140,6 +2188,12 @@ export default new Vuex.Store({
     updatePlayers ({ commit }, payload) {
       return new Promise((resolve) => {
         commit("updatePlayers", payload)
+        resolve()
+      })
+    },
+    updatePlayersStatus ({ commit }, payload) {
+      return new Promise((resolve) => {
+        commit("updatePlayersStatus", payload)
         resolve()
       })
     },

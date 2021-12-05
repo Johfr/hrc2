@@ -1,5 +1,5 @@
 <template>
-  <div class="date-picker-container">  
+  <div class="date-picker-container">
     <v-date-picker v-model="dates" range full-width @input="emitDates"></v-date-picker>
     <!-- <v-text-field
       v-model="dateRangeText"
@@ -13,6 +13,12 @@
 
 <script>
   export default {
+    // props: {
+    //   updateDate: {
+    //     type: Array,
+    //     default: () => {}
+    //   }
+    // },
     data: () => ({
       dates: [],
     }),

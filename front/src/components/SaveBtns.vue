@@ -10,8 +10,19 @@
       {{ alertFailedMsg }}
     </p>
 
-    <!-- <v-btn @click="dataPullConfirm = true">Importer</v-btn> -->
-    <v-btn color="blue" class="save-btn" @click="pushDatas">Sauvegarder</v-btn>
+    <!-- <v-btn @click="dataPullConfirm = true">Importer</v-btn>
+      @click="pushDatas"
+      @click="loader = 'loading'"
+     -->
+    <v-btn
+      :loading="loading"
+      :disabled="loading"
+      color="secondary"
+      class="save-btn"
+      @click="pushDatas"
+    >
+        Sauvegarder
+      </v-btn>
     
     <p class="info" v-show="dataPullConfirm">
       {{ dataPullConfirmMsg }}
@@ -27,6 +38,8 @@
   
   export default {
     data: () => ({
+      loader: null,
+      loading: false,
       teamId: '',
       dataPullConfirmMsg: 'Toutes les données non sauvegardées seront perdues',
       dataPullConfirm: false,
@@ -47,8 +60,22 @@
     created () {
       this.teamId = window.location.pathname.split('/')[2]
     },
+    // watch: {
+    //   loader () {
+    //     const l = this.loader
+    //     this[l] = !this[l]
+
+    //     // setTimeout(() => (this[l] = false), 3000)
+
+    //     // this.loader = null
+    //   },
+    // },
     methods: {
       async pushDatas () {
+        // init loader
+        this.loader = 'loading'
+        const l = this.loader
+        this[l] = !this[l]
         try {
           const events = this.$store.getters.getEvents
           const actifPlayers = this.$store.getters.getActifPlayers.length
@@ -66,10 +93,12 @@
             leaders: leaders
           }).then(() => {
             this.dataSend = true
+            this[l] = false // on clean le loader
             setTimeout(() => {
               this.dataSend = false
               console.log('data pushé')
             }, 4000)
+            this.loader = null
           })
           .catch((e) => {
             console.log('err', e)

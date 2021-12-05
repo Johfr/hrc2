@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.032ce70991985ef5a356fa953ccf82c2.js"
+  "/precache-manifest.c397620e5d6e46f65ff51790c18376bb.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "hrc2_team_statistics_app"});

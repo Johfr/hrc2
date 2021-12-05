@@ -28,7 +28,7 @@
           Les scores et les points correspondent au tableau des VS inGame. Tu vas pouvoir rentrer les 2 données en même temps. Le total des points sera calculé automatiquement
           <img class="info-img" src="/img/team_vs.jpg" alt="">
         </li>
-        <li class="mb-0">Les termes km1, score1, pts1 etc. correspondent aux VS auxquels ton équipe à participé</li>
+        <li class="mb-0">Les termes km1, score1, pts1 etc. correspondent aux nombres de kms parcourus par un joueur au cours du 1er VS, idem pour score1 et pts1 (voir img ci-dessus)</li>
         <li class="mb-0">Un event dure 7 jours. Un VS dure 2 jours. Tu vas pouvoir rentrer jusqu'à 4 VS</li>
         <ul class="info-sublist">
           <li class="mb-0">VS1 = score1, km1, pts1</li>
@@ -64,7 +64,7 @@
   
   <!-- selecteur d'events  -->
   <v-row>
-    <v-col md="9" sm="6" cols="12">
+    <v-col lg="8" md="6" cols="12">
       <v-select
         :items="eventsItems"
         v-model="events"
@@ -75,8 +75,11 @@
       New event => va récupérer en Bdd l'event s'il exite
       Affiche le prochain event pour les équipes qui sont en S4
     -->
-    <v-col md="3" sm="6" cols="12" class="event-btn-container">
+    <v-col lg="2" md="3" cols="6" class="event-btn-container">
       <NewEvent @new-event-created="newEventCreatedFn" />
+    </v-col>
+    <v-col lg="2" md="3" cols="6" class="event-btn-container" v-if="actualEvent.actual">
+      <UpdateEvents @event-updated="updateEventFn" />
     </v-col>
   </v-row>
 
@@ -104,18 +107,34 @@
       <TableMembers :actualEvent="actualEvent" />
     </v-col>
   </v-row>
+
+  <!-- Skeleton -->
+  <v-row v-else>
+    <v-col cols="12">
+      <v-sheet
+        :color="`grey ${theme.isDark ? 'darken-2' : 'lighten-4'}`"
+        class="pa-3"
+      >
+        <v-skeleton-loader
+          class="mx-auto"
+          type="table"
+        ></v-skeleton-loader>
+      </v-sheet>
+    </v-col>
+  </v-row>
 </v-container>
 </template>
 
 <script>
-import Modal from '../components/Modal.vue'
-import NewEvent from '../components/NewEvent.vue'
+import Modal from '../components/ModalGestionTeam.vue'
+import NewEvent from '../components/Events/NewEvent.vue'
 import SaveBtns from '../components/SaveBtns.vue'
 import TableMembers from '../components/TableMembers.vue'
 import TableBestParticipation from '../components/Tables/TableBestParticipation.vue'
 import TableBestRecords from '../components/Tables/TableBestRecords.vue'
 import firebaseInit from '../components/Firebase/FirebaseInit.js'
 import { getFirestore, doc, getDoc } from "firebase/firestore"
+import UpdateEvents from '../components/Events/UpdateEvents.vue'
 
   export default {
     name: 'TeamPage',
@@ -150,6 +169,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore"
       TableBestParticipation,
       Modal,
       SaveBtns,
+      UpdateEvents,
     },
     watch: {
       events (val) {
@@ -157,13 +177,16 @@ import { getFirestore, doc, getDoc } from "firebase/firestore"
         
         this.allEvents.map((event, index) => {
           if (event.eventName === val) {
+            // console.log(event)
             actualEvent.name = event.eventName
             actualEvent.date = event.start + " - " + event.end
+            actualEvent.actual = event.actualEvent
+            this.actualEvent = actualEvent
             this.actualEventIndex = index
           }
         })
         this.$store.commit('updateEventSelected', actualEvent)
-        // console.log(actualEvent)
+        // console.log(this.actualEvent)
       },
     },
     created () {
@@ -174,6 +197,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore"
             if (event.eventName) {
               this.actualEvent.name = event.eventName
               this.actualEvent.date = event.start + " - " + event.end
+              this.actualEvent.actual = event.actualEvent
               this.actualEvent.index = index
             }
           })
@@ -186,6 +210,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore"
     methods: {
       initEvent () {
         this.allEvents = this.$store.getters.getEvents
+        // console.log(this.allEvents)
         this.allEvents.map(event => {
           this.eventsItems.push(event.eventName)
         })
@@ -225,6 +250,19 @@ import { getFirestore, doc, getDoc } from "firebase/firestore"
           this.dataPullConfirm = false
           this.dataPullSuccess = false
         }
+      },
+      updateEventFn (events) {
+        console.log('events', events)
+        // this.initEvent()
+        this.eventsItems = []
+        events.map(event => {
+          this.eventsItems.push(event.eventName)
+        })
+        // on trigger de suite le selecteur d'events avec la nouvelle valeur
+        this.events = []
+        this.events = this.allEvents[this.allEvents.length - 1].eventName
+        // console.log('events', this.events)
+        // console.log('all', this.allEvents[this.allEvents.length - 1].eventName)
       },
       newEventCreatedFn () {
         this.initEvent()
@@ -272,7 +310,15 @@ import { getFirestore, doc, getDoc } from "firebase/firestore"
         })
         // this.$store.dispatch('setPlayers', players)
       }
-    }
+    },
+    // Vuetify components provide
+    // a theme variable that is
+    // used to determine dark
+    inject: {
+      theme: {
+        default: { isDark: false },
+      },
+    },
   }
 </script>
 

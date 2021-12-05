@@ -101,7 +101,7 @@
             </v-card>
           </v-dialog>
           <div class="user-info-list-container">
-            <v-btn
+            <!-- <v-btn
               color="primary"
               dark
               class="mb-2"
@@ -109,7 +109,7 @@
               @click="editItem(user)"
             >
               Modifier les infos
-            </v-btn>
+            </v-btn> -->
             <!-- EMAIL  -->
             <div class="user-info-container">
               <span class="user-label">

@@ -7,6 +7,8 @@
       class=""
       :search="search"
       :custom-filter="filterOnlyCapsText"
+      :loading="loaded"
+      loading-text="Loading... Please wait"
     >
       <template v-slot:top>
         <v-toolbar
@@ -22,10 +24,12 @@
           
           <v-spacer></v-spacer>
           <!-- Modal pour Creer une team -->
+          <!-- <p v-if="user.role !== 'leader'">Seul les leaders peuvent créer une team</p> -->
+          <!-- // retrait de la condition si pas leader  -->
+          <!-- v-if="user.teamId === undefined && user.role === 'leader'" -->
           <v-dialog
             v-model="dialog"
             max-width="500px"
-            v-if="user.teamId === undefined && user.role === 'leader'"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -132,6 +136,11 @@
         </v-icon> -->
       </template>
 
+      <template v-slot:item.teamname="{ item, index }">
+        <!-- {{ header.text }} -- -->
+        #{{ index + 1 }} {{ item.teamname }}
+      </template>
+
       <template v-slot:item.leaders="{ item }">
         <!-- {{ header.text }} -- -->
         {{ item.leaders }}
@@ -147,7 +156,8 @@
         {{ item.leaders ? item.leaders : "0" }}
         <v-icon small>mdi-account-multiple</v-icon>
       </template>
-      <!-- ???  -->
+      
+      <!-- Si aucune donnée -->
       <template v-slot:no-data>
         <v-btn
           color="primary"
@@ -171,6 +181,7 @@
   export default {
   components: { FormCreateTeam, FormInputCodeVerify },
     data: () => ({
+      loaded: true,
       dialog: false,
       dialogJoin: false,
       dialogDelete: false,
@@ -241,6 +252,8 @@
           // doc.data() is never undefined for query doc snapshots
           // console.log(doc.id, " => ", doc.data());
           this.teams.push({...doc.data(), teamId: doc.id})
+          // this.$emit('loaded')
+          this.loaded = false
         });
         // this.teams = [
         //   {
